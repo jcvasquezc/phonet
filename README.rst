@@ -2,6 +2,13 @@
 Phonet
 ======================
 
+.. image:: https://readthedocs.org/projects/phonet/badge/?version=latest
+:target: https://phonet.readthedocs.io/en/latest/?badge=latest
+:alt: Documentation Status
+
+.. image:: https://travis-ci.org/jcvasquezc/phonet.svg?branch=master
+    :target: https://travis-ci.org/jcvasquezc/phonet
+
 This toolkit compute posteriors probabilities of phonological classes from audio files for several groups of phonemes according to the mode and manner of articulation.
 
 If you are not sure about what phonological classes are, have a look at this
@@ -63,7 +70,7 @@ Supported features:
 
 
 
- 
+
 Estimation of phonological classes
 ====================================
 
@@ -88,4 +95,3 @@ phonclass     phonological class to be evaluated
 plot_flag     True or False, whether you want plots of phonological classes or not
 returns			  It crates the feat_file with the estimation of the phonological classes for each time-frame of the audio file.
 ============= ===========
-

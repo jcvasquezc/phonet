@@ -16,15 +16,15 @@
 import os
 import sys
 
-#from unittest.mock import MagicMock
+from unittest.mock import MagicMock
 
-#class Mock(MagicMock):
-#    @classmethod
-#    def __getattr__(cls, name):
-#        return MagicMock()
+class Mock(MagicMock):
+   @classmethod
+   def __getattr__(cls, name):
+       return MagicMock()
 
-#MOCK_MODULES = ['six', 'matplotlib', 'Keras', 'numpy', 'pandas', 'python_speech_features', 'setuptools']
-#sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+MOCK_MODULES = ['tensorflow']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
