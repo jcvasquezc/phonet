@@ -13,28 +13,32 @@ If you are not sure about what phonological classes are, have a look at this
 The list of the phonological classes available and the phonemes that are activated for each phonological class are observed in the following Table
 
 
-================== 	  ================================================================================
-Phonological class 		Phonemes
-==================	  ================================================================================
-vocalic               /a/, /e/, /i/, /o/, /u/                                                                                                                                   \\
+The list of the phonological classes available and the phonemes that are activated for each phonological class are observed in the following Table
+
+
+==================    ================================================================================
+Phonological class    Phonemes
+==================    ================================================================================
+vocalic               /a/, /e/, /i/, /o/, /u/
 consonantal           /b/, /tS/, /d/, /f/, /g/, /x/, /k/, /l/, /ʎ/, /m/, /n/, /p/, /ɾ/, /r/, /s/, /t/
-back                  /a/, /o/, /u/                                                                                                                                             \\
-anterior              /e/, /i/                                                                                                                                                  \\
-open                  /a/, /e/, /o/                                                                                                                                             \\
-close                 /i/, /u/                                                                                                                                                  \\
-nasal                 /m/, /n/                                                                                                                                                  \\
+back                  /a/, /o/, /u/
+anterior              /e/, /i/
+open                  /a/, /e/, /o/
+close                 /i/, /u/
+nasal                 /m/, /n/
 stop                  /p/, /b/, /t/, /k/, /g/, /tS/, /d/
 continuant            /f/, /b/, /tS/, /d/, /s/, /g/, /ʎ/, /x/
-lateral               /l/                                                                                                                                                       \\
+lateral               /l/
 flap                  /ɾ/
-trill                 /r/                                                                                                                                                       \\
-voiced                /a/, /e/, /i/, /o/, /u/, /b/, /d/, /l/, /m/, /n/, /r/, /g/, /ʎ/ \\
+trill                 /r/
+voiced                /a/, /e/, /i/, /o/, /u/, /b/, /d/, /l/, /m/, /n/, /r/, /g/, /ʎ/
 strident              /f/, /s/, /tS/
-labial                /m/, /p/, /b/, /f/                                                                                                                                        \\
-dental                /t/, /d/                                                                                                                                                  \\
-velar                 /k/, /g/, /x/                                                                                                                                             \\
+labial                /m/, /p/, /b/, /f/
+dental                /t/, /d/
+velar                 /k/, /g/, /x/
 pause                 /sil/
-=============	==========================================================================================
+==================    ================================================================================
+
 
 
 Installation
