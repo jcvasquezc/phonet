@@ -25,7 +25,7 @@ class Mock(MagicMock):
 
 MOCK_MODULES = ['tensorflow', 'tensorflow.python', 'tensorflow.python.framework', 'tensorflow.python.training',
                 'tensorflow.python.ops', 'tensorflow.python.client','tensorflow.core','matplotlib', 'matplotlib.pyplot',
-                'matplotlib.patches']
+                'matplotlib.patches','tensorflow.core.protobuf']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # If extensions (or modules to document with autodoc) are in another directory,
