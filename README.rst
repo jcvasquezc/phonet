@@ -43,10 +43,9 @@ Installation
 
 From this repository::
 
-	git clone https://github.com/jcvasquezc/phonet
-  cd phonet
-  python setup.py
-
+    git clone https://github.com/jcvasquezc/phonet
+    cd phonet
+    python setup.py
 
 Usage
 =====
@@ -60,35 +59,22 @@ Supported features:
 
 
 
-
+ 
 Estimation of phonological classes
 ====================================
 
 
-Estimate the phonological classes using the BGRU models for an audio file or for a folder that contains audio files inside
+Estimate the phonological classes using the BGRU models for an audio file or for a folder that contains audio files inside::
 
 
-python
-def getphonclass(audio_file, feat_file, phonclass="all", plot_flag=True)
+      python
+      def getphonclass(audio_file, feat_file, phonclass="all", plot_flag=True)
 
-inputs:
-audio_file: file audio (.wav) or path with audio files inside, sampled at 16 kHz
-feat_file: file (.csv) to save the posteriors for the phonological classes, or a folder to save the posteriors for different
-files when audio_file is a folder
-phonclass: phonological class to be evaluated.
-
-output: phonological classes estimated for the speech waveform from the input_data
-
-
-
-An additional parameter could be "all", which compute the posteriors for all the phonological classes
-
-
-=============	===========
-Parameter 		Description
-=============	===========
-audio_file		file audio (.wav) or path with audio files inside, sampled at 16 kHz
-feat_file 		file (.csv) to save the probabilities for the phonological classes,
+============= ===========
+Parameter     Description
+============= ===========
+audio_file    file audio (.wav) or path with audio files inside, sampled at 16 kHz
+feat_file     file (.csv) to save the probabilities for the phonological classes,
               or a folder to save the posteriors for different files when audio_file is a folder
 phonclass     phonological class to be evaluated
               The list of phonological classes include:
@@ -97,4 +83,5 @@ phonclass     phonological class to be evaluated
               "labial", "dental", "velar", "pause", "vocalic" or "all"
 plot_flag     True or False, whether you want plots of phonological classes or not
 returns			  It crates the feat_file with the estimation of the phonological classes for each time-frame of the audio file.
-=============	===========
+============= ===========
+
