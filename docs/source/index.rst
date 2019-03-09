@@ -71,7 +71,7 @@ From the source file::
 
     git clone https://github.com/jcvasquezc/phonet
     cd phonet
-    python setup.py
+    python setup.py install
 
 Methods
 -------------------------------------
