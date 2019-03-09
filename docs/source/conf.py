@@ -23,7 +23,8 @@ class Mock(MagicMock):
    def __getattr__(cls, name):
        return MagicMock()
 
-MOCK_MODULES = ['tensorflow', 'tensorflow.python', 'tensorflow.python.framework', 'tensorflow.python.training','tensorflow.python.ops']
+MOCK_MODULES = ['tensorflow', 'tensorflow.python', 'tensorflow.python.framework', 'tensorflow.python.training',
+                'tensorflow.python.ops', 'tensorflow.python.client']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # If extensions (or modules to document with autodoc) are in another directory,
