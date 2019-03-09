@@ -2,3 +2,4 @@
 
 -e .
 mock
+matplotlib==2.2.2
