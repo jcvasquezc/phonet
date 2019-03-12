@@ -236,6 +236,11 @@ class Phonet:
         if feat_path[-1]!="/":
             feat_path=feat_path+"/"
 
+
+
+
+
+
         for j in range(len(hf)):
             audio_file=audio_path+hf[j]
             feat_file=feat_path+hf[j].replace(".wav", ".csv")
