@@ -59,7 +59,7 @@ To estimate the `nasal` phonological class::
 
     file_audio="./audios/sentence.wav"
     file_feat="./phonclasses/sentence_nasal"
-    phon.getphonclass(file_audio, file_feat, "nasal", True)
+    phon.get_phon_wav(file_audio, file_feat, "nasal", True)
 
 getphonclass will save a .csv file in "file_feat" with the probability of the nasal phonological class for every time frame of the audio file.
 
