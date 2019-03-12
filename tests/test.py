@@ -19,17 +19,9 @@ if __name__=="__main__":
     PATH=os.path.dirname(os.path.abspath(__file__))
     phon=Phonet()
 
-    file_audio=PATH+"/../audios/pataka.wav"
-    file_feat=PATH+"/../phonclasses/pataka"
-    phon.getphonclass(file_audio, file_feat, "stop", False)
+    file_audio=PATH+"/audios/sentence.wav"
+    file_feat=PATH+"/phonclasses/sentence_all"
+    phon.get_phon_wav(file_audio, file_feat, "all", False)
 
-    file_audio=PATH+"/../audios/sentence.wav"
-
-    file_feat=PATH+"/../phonclasses/sentence_nasal"
-    phon.getphonclass(file_audio, file_feat, "nasal", False)
-
-    file_feat=PATH+"/../phonclasses/sentence_strident"
-    phon.getphonclass(file_audio, file_feat, "strident", False)
-
-    file_feat=PATH+"/../phonclasses/sentence_all"
-    phon.getphonclass(file_audio, file_feat, "all", False)
+    directory=PATH+"/phonclasses/"
+    phon.get_phon_path(PATH+"/audios/", PATH+"/phonclasses2/", "all")

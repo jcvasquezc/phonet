@@ -73,9 +73,7 @@ class Phonet:
         fill=len(signal)%int(fs*self.size_frame*self.len_seq)
 
         fillv=0.05*np.random.randn(fill)-0.025
-        print(len(signal))
         signal=np.hstack((signal,fillv))
-        print(len(signal))
         Fbank, energy=pyfeat.fbank(signal,samplerate=fs,winlen=self.size_frame,winstep=self.time_shift,
           nfilt=self.nfilt,nfft=512,lowfreq=0,highfreq=None,preemph=0.97)
 
@@ -108,28 +106,20 @@ class Phonet:
             return np.nan
 
 
-    def getphonclass(self, audio_file, feat_file, phonclass="all", plot_flag=True):
+    def get_phon_wav(self, audio_file, feat_file, phonclass="all", plot_flag=True):
         """
-        Estimate the phonological classes using the BGRU models for an audio file or for a folder that contains audio files inside
+        Estimate the phonological classes using the BGRU models for an audio file (.wav)
 
-        :param audio_file: file audio (.wav) or path with audio files inside, sampled at 16 kHz
-        :param feat_file: file (.csv) to save the posteriors for the phonological classes, or a folder to save the posteriors for different files when audio_file is a folder
+        :param audio_file: file audio (.wav) sampled at 16 kHz
+        :param feat_file: file (.csv) to save the posteriors for the phonological classes
         :param phonclass: phonological class to be evaluated ("consonantal", "back", "anterior", "open", "close", "nasal", "stop",
                                                   "continuant",  "lateral", "flap", "trill", "voice", "strident",
                                                   "labial", "dental", "velar", "pause", "vocalic", "all").
         :param plot_flag: True or False, whether you want plots of phonological classes or not
         :returns: A csv file created at FEAT_FILE with the posterior probabilities for the phonological classes.
         """
-        if audio_file.find('.wav')!=-1 or audio_file.find('.WAV')!=-1:
-            nfiles=1
-            hf=['']
-        elif os.path.isdir(audio_file):
-            hf=os.listdir(audio_file)
-            hf.sort()
-            nfiles=len(hf)
-        else:
-            print(audio_file+" is not a valid audio file or a directory")
-            sys.exit()
+        if audio_file.find('.wav')==-1 and audio_file.find('.WAV')==-1:
+            raise ValueError(audio_file+" is not a valid audio file")
 
         if phonclass.find("all")!=-1:
             keys_val=["consonantal", "back", "anterior", "open", "close", "nasal", "stop", "continuant",
@@ -157,75 +147,97 @@ class Phonet:
             STD=dict_scaler["STD"]
             f.close()
 
-        for k in range(nfiles):
-            audio=audio_file+hf[k]
-            if audio.find('.wav')==1 and audio_file.find('.WAV')==-1:
-                print("file: "+audio+" is not a valid audio file")
-                continue
+        fs, signal=read(audio_file)
+        if fs!=16000:
+            raise ValueError(str(fs)+" is not a valid sampling frequency")
+        feat=self.getfeat(signal,fs)
+        nf=int(feat.shape[0]/self.len_seq)
+        start=0
+        fin=self.len_seq
+        Feat=[]
+        for j in range(nf):
+            featmat_t=feat[start:fin,:]
+            Feat.append(featmat_t)
+            start=start+self.len_seq
+            fin=fin+self.len_seq
+        Feat=np.stack(Feat, axis=0)
+        Feat=Feat-MU
+        Feat=Feat/STD
+        df={}
 
-            csv_file=feat_file+hf[k].replace('.wav','.csv')
-            print("Processing audio "+str(k+1)+ " from " + str(nfiles)+ " " +hf[k])
-            fs, signal=read(audio_file)
-            feat=self.getfeat(signal,fs)
-            nf=int(feat.shape[0]/self.len_seq)
-            start=0
-            fin=self.len_seq
-            Feat=[]
-            for j in range(nf):
-                featmat_t=feat[start:fin,:]
-                Feat.append(featmat_t)
-                start=start+self.len_seq
-                fin=fin+self.len_seq
-            Feat=np.stack(Feat, axis=0)
-            Feat=Feat-MU
-            Feat=Feat/STD
-            df={}
+        pred_mat_phon=np.asarray(Model_phon.predict(Feat))
+        pred_mat_phon_seq=np.concatenate(pred_mat_phon,0)
+        pred_vec_phon=np.argmax(pred_mat_phon_seq,1)
+        phonemes_list=self.number2phoneme(pred_vec_phon)
 
-            pred_mat_phon=np.asarray(Model_phon.predict(Feat))
-            pred_mat_phon_seq=np.concatenate(pred_mat_phon,0)
-            pred_vec_phon=np.argmax(pred_mat_phon_seq,1)
-            phonemes_list=self.number2phoneme(pred_vec_phon)
+        t2=np.arange(len(pred_vec_phon))*self.time_shift
+        df["time"]=t2
+        df["phoneme"]=phonemes_list
+        for l in range(len(Models)):
+            pred_mat=np.asarray(Models[l].predict(Feat))
+            pred_matv=pred_mat[:,:,1]
+            df[keys_val[l]]=np.hstack(pred_matv)
+            if plot_flag:
+                plt.figure()
+                t=np.arange(len(signal))/fs
+                signal=signal-np.mean(signal)
+                plt.plot(t,signal/np.max(np.abs(signal)), 'k', alpha=0.5)
+                plt.plot(t2,df[keys_val[l]], label=keys_val[l])
 
-            print("recognized phonemes",phonemes_list)
-            t2=np.arange(len(pred_vec_phon))*self.time_shift
-            df["time"]=t2
-            df["phoneme"]=phonemes_list
-            for l in range(len(Models)):
-                pred_mat=np.asarray(Models[l].predict(Feat))
-                pred_matv=pred_mat[:,:,1]
-                df[keys_val[l]]=np.hstack(pred_matv)
-                if plot_flag:
-                    plt.figure()
-                    t=np.arange(len(signal))/fs
-                    signal=signal-np.mean(signal)
-                    plt.plot(t,signal/np.max(np.abs(signal)), 'k', alpha=0.5)
-                    plt.plot(t2,df[keys_val[l]], label=keys_val[l])
+                ini=t2[0]
+                for nu in range(1,len(phonemes_list)):
+                    if phonemes_list[nu]!=phonemes_list[nu-1] or nu==len(phonemes_list)-1:
+                        difft=t2[nu]-ini
+                        plt.text(x=ini+difft/2, y=1, s="/"+phonemes_list[nu-1]+"/", color="k", fontsize=12)
+                        ini=t2[nu]
+                start=t2[0]
+                fin=t2[0]
+                rect=True
+                thr=0.75
+                for nu in range(1,len(df[keys_val[l]])):
+                    if (df[keys_val[l]][nu]>thr and df[keys_val[l]][nu-1]<=thr):
+                        start=t2[nu]
 
-                    ini=t2[0]
-                    for nu in range(1,len(phonemes_list)):
-                        if phonemes_list[nu]!=phonemes_list[nu-1] or nu==len(phonemes_list)-1:
-                            difft=t2[nu]-ini
-                            plt.text(x=ini+difft/2, y=1, s="/"+phonemes_list[nu-1]+"/", color="k", fontsize=12)
-                            ini=t2[nu]
-                    start=t2[0]
-                    fin=t2[0]
-                    rect=True
-                    thr=0.75
-                    for nu in range(1,len(df[keys_val[l]])):
-                        if (df[keys_val[l]][nu]>thr and df[keys_val[l]][nu-1]<=thr):
-                            start=t2[nu]
+                    elif (df[keys_val[l]][nu]<=thr and df[keys_val[l]][nu-1]>thr) or (nu==len(df[keys_val[l]])-1 and df[keys_val[l]][nu-1]>thr):
+                        fin=t2[nu]
 
-                        elif (df[keys_val[l]][nu]<=thr and df[keys_val[l]][nu-1]>thr) or (nu==len(df[keys_val[l]])-1 and df[keys_val[l]][nu-1]>thr):
-                            fin=t2[nu]
+                        plt.plot([fin, fin], [-1, 1], 'g')
+                        plt.plot([start, start], [-1, 1], 'g')
+                        difft=fin-start
+                        currentAxis = plt.gca()
+                        currentAxis.add_patch(Rectangle((start,-1),width=difft,height=2,color='g',alpha=0.3))
 
-                            plt.plot([fin, fin], [-1, 1], 'g')
-                            plt.plot([start, start], [-1, 1], 'g')
-                            difft=fin-start
-                            currentAxis = plt.gca()
-                            currentAxis.add_patch(Rectangle((start,-1),width=difft,height=2,color='g',alpha=0.3))
+                plt.legend()
+                plt.grid()
+                plt.show()
+        df2=pd.DataFrame(df)
+        df2.to_csv(feat_file)
 
-                    plt.legend()
-                    plt.grid()
-                    plt.show()
-            df2=pd.DataFrame(df)
-            df2.to_csv(csv_file)
+
+    def get_phon_path(self, audio_path, feat_path, phonclass="all", plot_flag=False):
+        """
+        Estimate the phonological classes using the BGRU models for all the (.wav) audio files included inside a directory
+
+        :param audio_path: directory with (.wav) audio files inside, sampled at 16 kHz
+        :param feat_path: directory were the computed phonological posteriros will be stores as a (.csv) file per (.wav) file from the input directory
+        :param phonclass: phonological class to be evaluated ("consonantal", "back", "anterior", "open", "close", "nasal", "stop",
+                                                  "continuant",  "lateral", "flap", "trill", "voice", "strident",
+                                                  "labial", "dental", "velar", "pause", "vocalic", "all").
+        :param plot_flag: True or False, whether you want plots of phonological classes or not
+        :returns: A directory with csv files created with the posterior probabilities for the phonological classes.
+        """
+
+        hf=os.listdir(audio_path)
+        hf.sort()
+
+        if not os.path.exists(feat_path):
+            os.makedirs(feat_path)
+
+        if feat_path[-1]!="/":
+            feat_path=feat_path+"/"
+
+        for j in range(len(hf)):
+            audio_file=audio_path+hf[j]
+            feat_file=feat_path+hf[j].replace(".wav", ".csv")
+            print("processing file ", j+1, " from ", str(len(hf)), " ", hf[j])
+            self.get_phon_wav(audio_file, feat_file, phonclass, plot_flag)
