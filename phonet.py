@@ -245,6 +245,7 @@ class Phonet:
     def get_posteriorgram(self, audio_file):
         """
         Estimate the posteriorgram for an audio file (.wav) sampled at 16kHz
+
         :param audio_file: file audio (.wav) sampled at 16 kHz
         :returns: plot of the posteriorgram
         """
