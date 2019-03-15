@@ -59,7 +59,7 @@ class Phonet:
         modelGRU.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['categorical_accuracy'])
         return modelGRU
 
-    def getfeat(self, signal, fs):
+    def get_feat(self, signal, fs):
         """
         This method extracts the log-Mel-filterbank energies used as inputs
         of the model.
@@ -150,7 +150,7 @@ class Phonet:
         fs, signal=read(audio_file)
         if fs!=16000:
             raise ValueError(str(fs)+" is not a valid sampling frequency")
-        feat=self.getfeat(signal,fs)
+        feat=self.get_feat(signal,fs)
         nf=int(feat.shape[0]/self.len_seq)
         start=0
         fin=self.len_seq
@@ -236,13 +236,85 @@ class Phonet:
         if feat_path[-1]!="/":
             feat_path=feat_path+"/"
 
-
-
-
-
-
         for j in range(len(hf)):
             audio_file=audio_path+hf[j]
             feat_file=feat_path+hf[j].replace(".wav", ".csv")
             print("processing file ", j+1, " from ", str(len(hf)), " ", hf[j])
             self.get_phon_wav(audio_file, feat_file, phonclass, plot_flag)
+
+    def get_posteriorgram(self, audio_file):
+        """
+        Estimate the posteriorgram for an audio file (.wav) sampled at 16kHz
+        :param audio_file: file audio (.wav) sampled at 16 kHz
+        :returns: plot of the posteriorgram
+        """
+        if audio_file.find('.wav')==-1 and audio_file.find('.WAV')==-1:
+            raise ValueError(audio_file+" is not a valid audio file")
+
+        keys_val=["anterior","back","close","consonantal","continuant","dental","flap",
+              "labial","lateral","nasal","open","pause","stop","strident","trill","velar","vocalic","voice"]
+
+        Models=[]
+        input_size=(self.len_seq, self.nfeat)
+        for l in range(len(keys_val)):
+            model_file=self.path+"/models/"+keys_val[l]+".h5"
+            Model=self.model(input_size, self.num_labels)
+            Model.load_weights(model_file)
+            Models.append(Model)
+
+        Model_phonemes=self.path+"/models/phonemes.h5"
+        input_size_phon=(self.len_seq, self.nfeat)
+        Model_phon=self.model(input_size, self.nphonemes)
+        Model_phon.load_weights(Model_phonemes)
+
+        file_scaler=self.path+"/models/scaler.pickle"
+        with open(file_scaler, 'rb') as f:
+            dict_scaler = pickle.load(f)
+            MU=dict_scaler["MU"]
+            STD=dict_scaler["STD"]
+            f.close()
+
+        fs, signal=read(audio_file)
+        if fs!=16000:
+            raise ValueError(str(fs)+" is not a valid sampling frequency")
+        feat=self.get_feat(signal,fs)
+        nf=int(feat.shape[0]/self.len_seq)
+        start=0
+        fin=self.len_seq
+        Feat=[]
+        for j in range(nf):
+            featmat_t=feat[start:fin,:]
+            Feat.append(featmat_t)
+            start=start+self.len_seq
+            fin=fin+self.len_seq
+        Feat=np.stack(Feat, axis=0)
+        Feat=Feat-MU
+        Feat=Feat/STD
+        df={}
+
+        pred_mat_phon=np.asarray(Model_phon.predict(Feat))
+        pred_mat_phon_seq=np.concatenate(pred_mat_phon,0)
+        pred_vec_phon=np.argmax(pred_mat_phon_seq,1)
+        phonemes_list=self.number2phoneme(pred_vec_phon)
+
+        t=np.arange(len(pred_vec_phon))*self.time_shift
+        posteriors=[]
+        for l in range(len(Models)):
+            pred_mat=np.asarray(Models[l].predict(Feat))
+            pred_matv=pred_mat[:,:,1]
+            posteriors.append(np.hstack(pred_matv))
+
+        posteriors=np.vstack(posteriors)
+        plt.figure()
+        plt.imshow(np.flipud(posteriors), extent=[0, t[-1], 0, len(keys_val)], aspect='auto')
+        plt.xlabel("Time (seconds)")
+        plt.ylabel("Phonological class")
+        plt.yticks(np.arange(len(keys_val))+0.5, keys_val)
+        ini=t[0]
+        for nu in range(1,len(phonemes_list)):
+            if phonemes_list[nu]!=phonemes_list[nu-1] or nu==len(phonemes_list)-1:
+                difft=t[nu]-ini
+                plt.text(x=ini+difft/2, y=19, s="/"+phonemes_list[nu-1]+"/", color="k", fontsize=12)
+                ini=t[nu]
+        plt.colorbar()
+        plt.show()

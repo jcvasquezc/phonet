@@ -69,24 +69,20 @@ Supported features:
 `Example use <example.py>`_
 
 
-
-
 Estimation of phonological classes
 ====================================
-
 
 Estimate the phonological classes using the BGRU models for an audio file or for a folder that contains audio files inside::
 
 
       python
-      def getphonclass(audio_file, feat_file, phonclass="all", plot_flag=True)
+      def get_phon_wav(audio_file, feat_file, phonclass="all", plot_flag=True)
 
 ============= ===========
 Parameter     Description
 ============= ===========
-audio_file    file audio (.wav) or path with audio files inside, sampled at 16 kHz
-feat_file     file (.csv) to save the probabilities for the phonological classes,
-              or a folder to save the posteriors for different files when audio_file is a folder
+audio_file    file audio (.wav) sampled at 16 kHz
+feat_file     file (.csv) to save the posteriors for the phonological classes
 phonclass     phonological class to be evaluated
               The list of phonological classes include:
               "consonantal", "back", "anterior", "open", "close", "nasal", "stop",

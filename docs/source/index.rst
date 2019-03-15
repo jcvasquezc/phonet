@@ -50,21 +50,12 @@ pause                 /sil/
 
 Supported features:
 
-- :py:meth:`phonet.getphonclass` - Estimate the phonological classes for an audio file or for a folder that contains audio files inside.
+- :py:meth:`phonet.get_phon_wav` - Estimate the phonological classes for an audio file (.wav).
+- :py:meth:`phonet.get_phon_path` - Estimate the phonological classes for a folder that contains audio files (.wav) inside.
+- :py:meth:`phonet.get_posteriorgram` - Plot the posteriorgram for an audio file (.wav).
 
 
-To estimate the `nasal` phonological class::
-
-    from phonet import Phonet
-
-    file_audio="./audios/sentence.wav"
-    file_feat="./phonclasses/sentence_nasal"
-    phon.get_phon_wav(file_audio, file_feat, "nasal", True)
-
-getphonclass will save a .csv file in "file_feat" with the probability of the nasal phonological class for every time frame of the audio file.
-
-
-Install
+Installation
 -------------------------------------
 
 From the source file::

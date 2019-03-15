@@ -10,8 +10,6 @@ Created on Feb 28 2019
 from phonet import Phonet
 import os
 
-
-
 if __name__=="__main__":
 
     PATH=os.path.dirname(os.path.abspath(__file__))
@@ -34,6 +32,7 @@ if __name__=="__main__":
     # get "all" phonological posteriors from a single file
     file_feat=PATH+"/phonclasses/sentence_all"
     phon.get_phon_wav(file_audio, file_feat, "all", True)
+
 
     # get "all" phonological posteriors from de audio files included in a directory
     directory=PATH+"/phonclasses/"
