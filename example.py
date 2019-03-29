@@ -33,7 +33,12 @@ if __name__=="__main__":
     file_feat=PATH+"/phonclasses/sentence_all"
     phon.get_phon_wav(file_audio, file_feat, "all", True)
 
+    # compute the posteriorgram for an audio_file
+    phon.get_posteriorgram(file_audio)
+
 
     # get "all" phonological posteriors from de audio files included in a directory
     directory=PATH+"/phonclasses/"
     phon.get_phon_path(PATH+"/audios/", PATH+"/phonclasses2/", "all")
+
+    

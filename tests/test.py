@@ -7,12 +7,15 @@ Created on Feb 28 2019
         juan.vasquez@fau.de
 """
 
-from phonet import Phonet
-import os
 
+import os
 import matplotlib
 matplotlib.use('agg')
+import sys
+PATH=os.path.dirname(os.path.abspath(__file__))
+sys.path.append(PATH+"/../")
 
+from phonet import Phonet
 
 if __name__=="__main__":
 
@@ -25,3 +28,5 @@ if __name__=="__main__":
 
     directory=PATH+"/phonclasses/"
     phon.get_phon_path(PATH+"/../audios/", PATH+"/phonclasses2/", "all")
+
+    phon.get_posteriorgram(file_audio)

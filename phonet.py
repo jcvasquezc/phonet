@@ -19,6 +19,8 @@ from keras.layers import Input, BatchNormalization, Bidirectional, GRU, Permute,
 from keras.utils import np_utils
 from keras.models import Model
 from keras import optimizers
+import gc
+from keras import backend as K
 
 class Phonet:
 
@@ -37,6 +39,7 @@ class Phonet:
         self.nfeat=34
         self.thrplot=0.5
         self.nphonemes=22
+        
 
 
     def model(self, input_size, num_labels):
@@ -212,6 +215,9 @@ class Phonet:
                 plt.show()
         df2=pd.DataFrame(df)
         df2.to_csv(feat_file)
+        K.clear_session()
+        gc.collect()
+
 
 
     def get_phon_path(self, audio_path, feat_path, phonclass="all", plot_flag=False):
@@ -241,6 +247,7 @@ class Phonet:
             feat_file=feat_path+hf[j].replace(".wav", ".csv")
             print("processing file ", j+1, " from ", str(len(hf)), " ", hf[j])
             self.get_phon_wav(audio_file, feat_file, phonclass, plot_flag)
+
 
     def get_posteriorgram(self, audio_file):
         """
