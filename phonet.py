@@ -9,7 +9,6 @@ Author: Camilo Vasquez-Correa 2019
 import os
 import numpy as np
 import python_speech_features as pyfeat
-from six.moves import cPickle as pickle
 from scipy.io.wavfile import read
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -24,7 +23,35 @@ from keras import backend as K
 
 class Phonet:
 
-    def __init__(self):
+    def __init__(self, phonological):
+        """Phonet computes posteriors probabilities of phonological classes from audio files for several groups of phonemes.
+        :param phonological: List of phnological posteriors to be computed (see Table as follows).
+        :returns: Phonet Object (see Examples).
+
+        ==================    ================================================================================
+        Phonological posterior    Phonemes
+        ==================    ================================================================================
+        vocalic               /a/, /e/, /i/, /o/, /u/
+        consonantal           /b/, /tS/, /d/, /f/, /g/, /x/, /k/, /l/, /ʎ/, /m/, /n/, /p/, /ɾ/, /r/, /s/, /t/
+        back                  /a/, /o/, /u/
+        anterior              /e/, /i/
+        open                  /a/, /e/, /o/
+        close                 /i/, /u/
+        nasal                 /m/, /n/
+        stop                  /p/, /b/, /t/, /k/, /g/, /tS/, /d/
+        continuant            /f/, /b/, /tS/, /d/, /s/, /g/, /ʎ/, /x/
+        lateral               /l/
+        flap                  /ɾ/
+        trill                 /r/
+        voiced                /a/, /e/, /i/, /o/, /u/, /b/, /d/, /l/, /m/, /n/, /r/, /g/, /ʎ/
+        strident              /f/, /s/, /tS/
+        labial                /m/, /p/, /b/, /f/
+        dental                /t/, /d/
+        velar                 /k/, /g/, /x/
+        pause                 /sil/
+        ==================    ================================================================================
+
+        """
 
         self.path=os.path.dirname(os.path.abspath(__file__))
         self.GRU_size=64
@@ -39,10 +66,42 @@ class Phonet:
         self.nfeat=34
         self.thrplot=0.5
         self.nphonemes=22
+        self.keys_val=phonological
+        self.models=self.load_model()
+        self.model_phon=self.load_model_phon()
+        self.MU, self.STD=self.load_scaler()
+        
         
 
 
-    def model(self, input_size, num_labels):
+    def load_model(self):
+        Models=[]
+        input_size=(self.len_seq, self.nfeat)
+        for l in range(len(self.keys_val)):
+            model_file=self.path+"/models/"+self.keys_val[l]+".h5"
+            Model=self.model(input_size, self.num_labels)
+            Model.load_weights(model_file)
+            Models.append(Model)
+        return Models
+
+    def load_model_phon(self):
+        input_size=(self.len_seq, self.nfeat)
+        Model_phonemes=self.path+"/models/phonemes.h5"
+        input_size_phon=(self.len_seq, self.nfeat)
+        Model_phon=self.model(input_size, self.nphonemes)
+        Model_phon.load_weights(Model_phonemes)
+        return Model_phon
+
+    def load_scaler(self):
+        file_mu=self.path+"/models/mu.npy"
+        file_std=self.path+"/models/std.npy"
+        MU=np.load(file_mu)
+        STD=np.load(file_std)
+
+        return MU, STD
+
+
+    def model(self, input_size, num_labels=2):
         """This is the architecture used for the estimation of the phonological classes
         It consists of a 2 Bidirectional GRU layers, followed by a time-distributed dense layer
 
@@ -64,7 +123,7 @@ class Phonet:
 
     def get_feat(self, signal, fs):
         """
-        This method extracts the log-Mel-filterbank energies used as inputs
+        This method extracts log-Mel-filterbank energies used as inputs
         of the model.
 
         :param signal: the audio signal from which to compute features. Should be an N array.
@@ -109,7 +168,7 @@ class Phonet:
             return np.nan
 
 
-    def get_phon_wav(self, audio_file, feat_file, phonclass="all", plot_flag=True):
+    def get_phon_wav(self, audio_file, feat_file, plot_flag=True):
         """
         Estimate the phonological classes using the BGRU models for an audio file (.wav)
 
@@ -120,35 +179,25 @@ class Phonet:
                                                   "labial", "dental", "velar", "pause", "vocalic", "all").
         :param plot_flag: True or False, whether you want plots of phonological classes or not
         :returns: A csv file created at FEAT_FILE with the posterior probabilities for the phonological classes.
+        
+        >>> phon=Phonet(["stop"]) # get the "stop" phonological posterior from a single file
+        >>> file_audio=PATH+"/audios/pataka.wav"
+        >>> file_feat=PATH+"/phonclasses/pataka"
+        >>> phon.get_phon_wav(file_audio, file_feat, True)
+
+        >>> file_audio=PATH+"/audios/sentence.wav"
+        >>> file_feat=PATH+"/phonclasses/sentence_nasal"
+        >>> phon=Phonet(["nasal"]) # get the "nasal" phonological posterior from a single file
+        >>> phon.get_phon_wav(file_audio, file_feat, True)
+
+        >>> file_audio=PATH+"/audios/sentence.wav"
+        >>> file_feat=PATH+"/phonclasses/sentence_nasal"
+        >>> phon=Phonet(["strident", "nasal", "back"]) # get "strident, nasal, and back" phonological posterior from a single file
+        >>> phon.get_phon_wav(file_audio, file_feat, True)
+
         """
         if audio_file.find('.wav')==-1 and audio_file.find('.WAV')==-1:
             raise ValueError(audio_file+" is not a valid audio file")
-
-        if phonclass.find("all")!=-1:
-            keys_val=["consonantal", "back", "anterior", "open", "close", "nasal", "stop", "continuant",
-                      "lateral", "flap", "trill", "voice", "strident", "labial", "dental", "velar", "pause", "vocalic"]
-        else:
-            keys_val=[phonclass]
-
-        Models=[]
-        input_size=(self.len_seq, self.nfeat)
-        for l in range(len(keys_val)):
-            model_file=self.path+"/models/"+keys_val[l]+".h5"
-            Model=self.model(input_size, self.num_labels)
-            Model.load_weights(model_file)
-            Models.append(Model)
-
-        Model_phonemes=self.path+"/models/phonemes.h5"
-        input_size_phon=(self.len_seq, self.nfeat)
-        Model_phon=self.model(input_size, self.nphonemes)
-        Model_phon.load_weights(Model_phonemes)
-
-        file_scaler=self.path+"/models/scaler.pickle"
-        with open(file_scaler, 'rb') as f:
-            dict_scaler = pickle.load(f)
-            MU=dict_scaler["MU"]
-            STD=dict_scaler["STD"]
-            f.close()
 
         fs, signal=read(audio_file)
         if fs!=16000:
@@ -164,11 +213,11 @@ class Phonet:
             start=start+self.len_seq
             fin=fin+self.len_seq
         Feat=np.stack(Feat, axis=0)
-        Feat=Feat-MU
-        Feat=Feat/STD
+        Feat=Feat-self.MU
+        Feat=Feat/self.STD
         df={}
 
-        pred_mat_phon=np.asarray(Model_phon.predict(Feat))
+        pred_mat_phon=np.asarray(self.model_phon.predict(Feat))
         pred_mat_phon_seq=np.concatenate(pred_mat_phon,0)
         pred_vec_phon=np.argmax(pred_mat_phon_seq,1)
         phonemes_list=self.number2phoneme(pred_vec_phon)
@@ -176,16 +225,16 @@ class Phonet:
         t2=np.arange(len(pred_vec_phon))*self.time_shift
         df["time"]=t2
         df["phoneme"]=phonemes_list
-        for l in range(len(Models)):
-            pred_mat=np.asarray(Models[l].predict(Feat))
+        for l in range(len(self.models)):
+            pred_mat=np.asarray(self.models[l].predict(Feat))
             pred_matv=pred_mat[:,:,1]
-            df[keys_val[l]]=np.hstack(pred_matv)
+            df[self.keys_val[l]]=np.hstack(pred_matv)
             if plot_flag:
                 plt.figure()
                 t=np.arange(len(signal))/fs
                 signal=signal-np.mean(signal)
                 plt.plot(t,signal/np.max(np.abs(signal)), 'k', alpha=0.5)
-                plt.plot(t2,df[keys_val[l]], label=keys_val[l])
+                plt.plot(t2,df[self.keys_val[l]], label=self.keys_val[l])
 
                 ini=t2[0]
                 for nu in range(1,len(phonemes_list)):
@@ -197,11 +246,11 @@ class Phonet:
                 fin=t2[0]
                 rect=True
                 thr=0.75
-                for nu in range(1,len(df[keys_val[l]])):
-                    if (df[keys_val[l]][nu]>thr and df[keys_val[l]][nu-1]<=thr):
+                for nu in range(1,len(df[self.keys_val[l]])):
+                    if (df[self.keys_val[l]][nu]>thr and df[self.keys_val[l]][nu-1]<=thr):
                         start=t2[nu]
 
-                    elif (df[keys_val[l]][nu]<=thr and df[keys_val[l]][nu-1]>thr) or (nu==len(df[keys_val[l]])-1 and df[keys_val[l]][nu-1]>thr):
+                    elif (df[self.keys_val[l]][nu]<=thr and df[self.keys_val[l]][nu-1]>thr) or (nu==len(df[self.keys_val[l]])-1 and df[self.keys_val[l]][nu-1]>thr):
                         fin=t2[nu]
 
                         plt.plot([fin, fin], [-1, 1], 'g')
@@ -215,12 +264,11 @@ class Phonet:
                 plt.show()
         df2=pd.DataFrame(df)
         df2.to_csv(feat_file)
-        K.clear_session()
         gc.collect()
 
 
 
-    def get_phon_path(self, audio_path, feat_path, phonclass="all", plot_flag=False):
+    def get_phon_path(self, audio_path, feat_path, plot_flag=False):
         """
         Estimate the phonological classes using the BGRU models for all the (.wav) audio files included inside a directory
 
@@ -231,6 +279,10 @@ class Phonet:
                                                   "labial", "dental", "velar", "pause", "vocalic", "all").
         :param plot_flag: True or False, whether you want plots of phonological classes or not
         :returns: A directory with csv files created with the posterior probabilities for the phonological classes.
+
+        >>> directory=PATH+"/phonclasses/"
+        >>> phon=Phonet(["vocalic", "strident", "nasal", "back", "stop", "pause"])
+        >>> phon.get_phon_path(PATH+"/audios/", PATH+"/phonclasses2/")
         """
 
         hf=os.listdir(audio_path)
@@ -246,7 +298,7 @@ class Phonet:
             audio_file=audio_path+hf[j]
             feat_file=feat_path+hf[j].replace(".wav", ".csv")
             print("processing file ", j+1, " from ", str(len(hf)), " ", hf[j])
-            self.get_phon_wav(audio_file, feat_file, phonclass, plot_flag)
+            self.get_phon_wav(audio_file, feat_file, plot_flag)
 
 
     def get_posteriorgram(self, audio_file):
@@ -255,32 +307,12 @@ class Phonet:
 
         :param audio_file: file audio (.wav) sampled at 16 kHz
         :returns: plot of the posteriorgram
+
+        >>> phon=Phonet(["vocalic", "strident", "nasal", "back", "stop", "pause"])
+        >>> phon.get_posteriorgram(file_audio)
         """
         if audio_file.find('.wav')==-1 and audio_file.find('.WAV')==-1:
             raise ValueError(audio_file+" is not a valid audio file")
-
-        keys_val=["anterior","back","close","consonantal","continuant","dental","flap",
-              "labial","lateral","nasal","open","pause","stop","strident","trill","velar","vocalic","voice"]
-
-        Models=[]
-        input_size=(self.len_seq, self.nfeat)
-        for l in range(len(keys_val)):
-            model_file=self.path+"/models/"+keys_val[l]+".h5"
-            Model=self.model(input_size, self.num_labels)
-            Model.load_weights(model_file)
-            Models.append(Model)
-
-        Model_phonemes=self.path+"/models/phonemes.h5"
-        input_size_phon=(self.len_seq, self.nfeat)
-        Model_phon=self.model(input_size, self.nphonemes)
-        Model_phon.load_weights(Model_phonemes)
-
-        file_scaler=self.path+"/models/scaler.pickle"
-        with open(file_scaler, 'rb') as f:
-            dict_scaler = pickle.load(f)
-            MU=dict_scaler["MU"]
-            STD=dict_scaler["STD"]
-            f.close()
 
         fs, signal=read(audio_file)
         if fs!=16000:
@@ -296,28 +328,28 @@ class Phonet:
             start=start+self.len_seq
             fin=fin+self.len_seq
         Feat=np.stack(Feat, axis=0)
-        Feat=Feat-MU
-        Feat=Feat/STD
+        Feat=Feat-self.MU
+        Feat=Feat/self.STD
         df={}
 
-        pred_mat_phon=np.asarray(Model_phon.predict(Feat))
+        pred_mat_phon=np.asarray(self.model_phon.predict(Feat))
         pred_mat_phon_seq=np.concatenate(pred_mat_phon,0)
         pred_vec_phon=np.argmax(pred_mat_phon_seq,1)
         phonemes_list=self.number2phoneme(pred_vec_phon)
 
         t=np.arange(len(pred_vec_phon))*self.time_shift
         posteriors=[]
-        for l in range(len(Models)):
-            pred_mat=np.asarray(Models[l].predict(Feat))
+        for l in range(len(self.models)):
+            pred_mat=np.asarray(self.models[l].predict(Feat))
             pred_matv=pred_mat[:,:,1]
             posteriors.append(np.hstack(pred_matv))
 
         posteriors=np.vstack(posteriors)
         plt.figure()
-        plt.imshow(np.flipud(posteriors), extent=[0, t[-1], 0, len(keys_val)], aspect='auto')
+        plt.imshow(np.flipud(posteriors), extent=[0, t[-1], 0, len(self.keys_val)], aspect='auto')
         plt.xlabel("Time (seconds)")
         plt.ylabel("Phonological class")
-        plt.yticks(np.arange(len(keys_val))+0.5, keys_val)
+        plt.yticks(np.arange(len(self.keys_val))+0.5, self.keys_val)
         ini=t[0]
         for nu in range(1,len(phonemes_list)):
             if phonemes_list[nu]!=phonemes_list[nu-1] or nu==len(phonemes_list)-1:
