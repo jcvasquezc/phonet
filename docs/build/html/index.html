@@ -1,0 +1,484 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to Phonet’s documentation! &mdash; phonet 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Need Help?" href="help.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> phonet
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="help.html">Need Help?</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">phonet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Welcome to Phonet&#8217;s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-phonet-s-documentation">
+<h1>Welcome to Phonet&#8217;s documentation!<a class="headerlink" href="#welcome-to-phonet-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This toolkit compute posteriors probabilities of phonological classes from audio files for several groups of phonemes according to the mode and manner of articulation.</p>
+<p>If you are not sure about what phonological classes are, have a look at this
+<a class="reference external" href="http://research.cs.tamu.edu/prism/lectures/sp/l3.pdf">Phonological classes tutorial</a></p>
+<p>The code for this project is available at <a class="reference external" href="https://github.com/jcvasquezc/phonet">https://github.com/jcvasquezc/phonet</a> .</p>
+<p>The list of the phonological classes available and the phonemes that are activated for each phonological class are observed in the following Table</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Phonological class</th>
+<th class="head">Phonemes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>vocalic</td>
+<td>/a/, /e/, /i/, /o/, /u/</td>
+</tr>
+<tr class="row-odd"><td>consonantal</td>
+<td>/b/, /tS/, /d/, /f/, /g/, /x/, /k/, /l/, /ʎ/, /m/, /n/, /p/, /ɾ/, /r/, /s/, /t/</td>
+</tr>
+<tr class="row-even"><td>back</td>
+<td>/a/, /o/, /u/</td>
+</tr>
+<tr class="row-odd"><td>anterior</td>
+<td>/e/, /i/</td>
+</tr>
+<tr class="row-even"><td>open</td>
+<td>/a/, /e/, /o/</td>
+</tr>
+<tr class="row-odd"><td>close</td>
+<td>/i/, /u/</td>
+</tr>
+<tr class="row-even"><td>nasal</td>
+<td>/m/, /n/</td>
+</tr>
+<tr class="row-odd"><td>stop</td>
+<td>/p/, /b/, /t/, /k/, /g/, /tS/, /d/</td>
+</tr>
+<tr class="row-even"><td>continuant</td>
+<td>/f/, /b/, /tS/, /d/, /s/, /g/, /ʎ/, /x/</td>
+</tr>
+<tr class="row-odd"><td>lateral</td>
+<td>/l/</td>
+</tr>
+<tr class="row-even"><td>flap</td>
+<td>/ɾ/</td>
+</tr>
+<tr class="row-odd"><td>trill</td>
+<td>/r/</td>
+</tr>
+<tr class="row-even"><td>voiced</td>
+<td>/a/, /e/, /i/, /o/, /u/, /b/, /d/, /l/, /m/, /n/, /r/, /g/, /ʎ/</td>
+</tr>
+<tr class="row-odd"><td>strident</td>
+<td>/f/, /s/, /tS/</td>
+</tr>
+<tr class="row-even"><td>labial</td>
+<td>/m/, /p/, /b/, /f/</td>
+</tr>
+<tr class="row-odd"><td>dental</td>
+<td>/t/, /d/</td>
+</tr>
+<tr class="row-even"><td>velar</td>
+<td>/k/, /g/, /x/</td>
+</tr>
+<tr class="row-odd"><td>pause</td>
+<td>/sil/</td>
+</tr>
+</tbody>
+</table>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="help.html">Need Help?</a></li>
+</ul>
+</div>
+<p>Supported features:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal"><span class="pre">phonet.get_phon_wav()</span></code> - Estimate the phonological classes for an audio file (.wav).</li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">phonet.get_phon_path()</span></code> - Estimate the phonological classes for a folder that contains audio files (.wav) inside.</li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">phonet.get_posteriorgram()</span></code> - Plot the posteriorgram for an audio file (.wav).</li>
+</ul>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>From the source file:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">jcvasquezc</span><span class="o">/</span><span class="n">phonet</span>
+<span class="n">cd</span> <span class="n">phonet</span>
+<span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="module-phonet">
+<span id="methods"></span><h2>Methods<a class="headerlink" href="#module-phonet" title="Permalink to this headline">¶</a></h2>
+<p>Compute posteriors probabilities of phonological classes from audio files for several groups of phonemes according to the mode and manner of articulation.
+Author: Camilo Vasquez-Correa 2019</p>
+<dl class="class">
+<dt id="phonet.Phonet">
+<em class="property">class </em><code class="descclassname">phonet.</code><code class="descname">Phonet</code><span class="sig-paren">(</span><em>phonological</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="phonet.Phonet.get_feat">
+<code class="descname">get_feat</code><span class="sig-paren">(</span><em>signal</em>, <em>fs</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.get_feat" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method extracts log-Mel-filterbank energies used as inputs
+of the model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>signal</strong> &#8211; the audio signal from which to compute features. Should be an N array.</li>
+<li><strong>fs</strong> &#8211; the sample rate of the signal we are working with, in Hz.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A numpy array of size (NUMFRAMES by 33 log-Mel-filterbank energies) containing features. Each row holds 1 feature vector.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phonet.Phonet.get_phon_path">
+<code class="descname">get_phon_path</code><span class="sig-paren">(</span><em>audio_path</em>, <em>feat_path</em>, <em>plot_flag=False</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.get_phon_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the phonological classes using the BGRU models for all the (.wav) audio files included inside a directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>audio_path</strong> &#8211; directory with (.wav) audio files inside, sampled at 16 kHz</li>
+<li><strong>feat_path</strong> &#8211; directory were the computed phonological posteriros will be stores as a (.csv) file per (.wav) file from the input directory</li>
+<li><strong>phonclass</strong> &#8211; phonological class to be evaluated (&#8220;consonantal&#8221;, &#8220;back&#8221;, &#8220;anterior&#8221;, &#8220;open&#8221;, &#8220;close&#8221;, &#8220;nasal&#8221;, &#8220;stop&#8221;,
+&#8220;continuant&#8221;,  &#8220;lateral&#8221;, &#8220;flap&#8221;, &#8220;trill&#8221;, &#8220;voice&#8221;, &#8220;strident&#8221;,
+&#8220;labial&#8221;, &#8220;dental&#8221;, &#8220;velar&#8221;, &#8220;pause&#8221;, &#8220;vocalic&#8221;, &#8220;all&#8221;).</li>
+<li><strong>plot_flag</strong> &#8211; True or False, whether you want plots of phonological classes or not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A directory with csv files created with the posterior probabilities for the phonological classes.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">directory</span><span class="o">=</span><span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;/phonclasses/&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">=</span><span class="n">Phonet</span><span class="p">([</span><span class="s2">&quot;vocalic&quot;</span><span class="p">,</span> <span class="s2">&quot;strident&quot;</span><span class="p">,</span> <span class="s2">&quot;nasal&quot;</span><span class="p">,</span> <span class="s2">&quot;back&quot;</span><span class="p">,</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span> <span class="s2">&quot;pause&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">.</span><span class="n">get_phon_path</span><span class="p">(</span><span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;/audios/&quot;</span><span class="p">,</span> <span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;/phonclasses2/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="phonet.Phonet.get_phon_wav">
+<code class="descname">get_phon_wav</code><span class="sig-paren">(</span><em>audio_file</em>, <em>feat_file</em>, <em>plot_flag=True</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.get_phon_wav" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the phonological classes using the BGRU models for an audio file (.wav)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>audio_file</strong> &#8211; file audio (.wav) sampled at 16 kHz</li>
+<li><strong>feat_file</strong> &#8211; file (.csv) to save the posteriors for the phonological classes</li>
+<li><strong>phonclass</strong> &#8211; phonological class to be evaluated (&#8220;consonantal&#8221;, &#8220;back&#8221;, &#8220;anterior&#8221;, &#8220;open&#8221;, &#8220;close&#8221;, &#8220;nasal&#8221;, &#8220;stop&#8221;,
+&#8220;continuant&#8221;,  &#8220;lateral&#8221;, &#8220;flap&#8221;, &#8220;trill&#8221;, &#8220;voice&#8221;, &#8220;strident&#8221;,
+&#8220;labial&#8221;, &#8220;dental&#8221;, &#8220;velar&#8221;, &#8220;pause&#8221;, &#8220;vocalic&#8221;, &#8220;all&#8221;).</li>
+<li><strong>plot_flag</strong> &#8211; True or False, whether you want plots of phonological classes or not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A csv file created at FEAT_FILE with the posterior probabilities for the phonological classes.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">=</span><span class="n">Phonet</span><span class="p">([</span><span class="s2">&quot;stop&quot;</span><span class="p">])</span> <span class="c1"># get the &quot;stop&quot; phonological posterior from a single file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;/audios/pataka.wav&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_feat</span><span class="o">=</span><span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;/phonclasses/pataka&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">.</span><span class="n">get_phon_wav</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">file_feat</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;/audios/sentence.wav&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_feat</span><span class="o">=</span><span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;/phonclasses/sentence_nasal&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">=</span><span class="n">Phonet</span><span class="p">([</span><span class="s2">&quot;nasal&quot;</span><span class="p">])</span> <span class="c1"># get the &quot;nasal&quot; phonological posterior from a single file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">.</span><span class="n">get_phon_wav</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">file_feat</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;/audios/sentence.wav&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_feat</span><span class="o">=</span><span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;/phonclasses/sentence_nasal&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">=</span><span class="n">Phonet</span><span class="p">([</span><span class="s2">&quot;strident&quot;</span><span class="p">,</span> <span class="s2">&quot;nasal&quot;</span><span class="p">,</span> <span class="s2">&quot;back&quot;</span><span class="p">])</span> <span class="c1"># get &quot;strident, nasal, and back&quot; phonological posterior from a single file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">.</span><span class="n">get_phon_wav</span><span class="p">(</span><span class="n">file_audio</span><span class="p">,</span> <span class="n">file_feat</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="phonet.Phonet.get_posteriorgram">
+<code class="descname">get_posteriorgram</code><span class="sig-paren">(</span><em>audio_file</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.get_posteriorgram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the posteriorgram for an audio file (.wav) sampled at 16kHz</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>audio_file</strong> &#8211; file audio (.wav) sampled at 16 kHz</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">plot of the posteriorgram</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">=</span><span class="n">Phonet</span><span class="p">([</span><span class="s2">&quot;vocalic&quot;</span><span class="p">,</span> <span class="s2">&quot;strident&quot;</span><span class="p">,</span> <span class="s2">&quot;nasal&quot;</span><span class="p">,</span> <span class="s2">&quot;back&quot;</span><span class="p">,</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span> <span class="s2">&quot;pause&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">.</span><span class="n">get_posteriorgram</span><span class="p">(</span><span class="n">file_audio</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="phonet.Phonet.model">
+<code class="descname">model</code><span class="sig-paren">(</span><em>input_size</em>, <em>num_labels=2</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the architecture used for the estimation of the phonological classes
+It consists of a 2 Bidirectional GRU layers, followed by a time-distributed dense layer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_size</strong> &#8211; size of input for the BGRU layers (number of features x sequence length).</li>
+<li><strong>num_labels</strong> &#8211; number of labels to be recogized by the DNN (2 for phonological posteriros and 21 for the phoneme recogizer).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A Keras model of a 2-layer BGRU neural network.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phonet.Phonet.number2phoneme">
+<code class="descname">number2phoneme</code><span class="sig-paren">(</span><em>seq</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.number2phoneme" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the prediction of the neural network for phoneme recognition to a list of phonemes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>seq</strong> &#8211; sequence of integers obtained from the preiction of the neural network for phoneme recognition.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of strings of the phonemes recognized for each time-frame.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+<div class="section" id="help">
+<h2>Help<a class="headerlink" href="#help" title="Permalink to this headline">¶</a></h2>
+<p>If you have trouble with Phonet, please write to Camilo Vasquez at: <a class="reference external" href="mailto:juan&#46;vasquez&#37;&#52;&#48;fau&#46;de">juan<span>&#46;</span>vasquez<span>&#64;</span>fau<span>&#46;</span>de</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="help.html" class="btn btn-neutral float-right" title="Need Help?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Camilo Vasquez.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
