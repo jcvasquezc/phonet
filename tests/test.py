@@ -20,13 +20,13 @@ from phonet import Phonet
 if __name__=="__main__":
 
     PATH=os.path.dirname(os.path.abspath(__file__))
-    phon=Phonet()
+    phon=Phonet(["vocalic", "strident", "nasal", "back", "stop", "pause"])
 
     file_audio=PATH+"/../audios/sentence.wav"
     file_feat=PATH+"/../phonclasses/sentence_all"
-    phon.get_phon_wav(file_audio, file_feat, "all", False)
+    phon.get_phon_wav(file_audio, file_feat, False)
 
     directory=PATH+"/phonclasses/"
-    phon.get_phon_path(PATH+"/../audios/", PATH+"/phonclasses2/", "all")
+    phon.get_phon_path(PATH+"/../audios/", PATH+"/phonclasses2/")
 
     phon.get_posteriorgram(file_audio)
