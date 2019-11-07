@@ -94,7 +94,7 @@ returns			  It crates the feat_file with the estimation of the phonological clas
 Training
 ====================================
 
-If you want to train Phonet in your own language, or specific phonological classes that are not defined here, please refer to the folder `train <https://github.com/jcvasquezc/phonet/tree/master/audios>`_ and follow the instructions there.
+If you want to train Phonet in your own language, or specific phonological classes that are not defined here, please refer to the folder `train <https://github.com/jcvasquezc/phonet/tree/master/train>`_ and follow the instructions there.
 
 If you experienced problems with the Training process, please send me an email `<juan.vasquez@fau.de>`
 
