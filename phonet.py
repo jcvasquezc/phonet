@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 Compute posteriors probabilities of phonological classes from audio files for several groups of phonemes according to the mode and manner of articulation.
-Author: Camilo Vasquez-Correa 2019
+@author: J. C. Vasquez-Correa
+        Pattern recognition Lab, University of Erlangen-Nuremberg
+        Faculty of Engineering, University of Antioquia,
+        juan.vasquez@fau.de
 """
-
-
 
 import os
 import numpy as np
@@ -71,9 +72,6 @@ class Phonet:
         self.model_phon=self.load_model_phon()
         self.MU, self.STD=self.load_scaler()
         
-        
-
-
     def load_model(self):
         Models=[]
         input_size=(self.len_seq, self.nfeat)
@@ -87,7 +85,6 @@ class Phonet:
     def load_model_phon(self):
         input_size=(self.len_seq, self.nfeat)
         Model_phonemes=self.path+"/models/phonemes.h5"
-        input_size_phon=(self.len_seq, self.nfeat)
         Model_phon=self.model(input_size, self.nphonemes)
         Model_phon.load_weights(Model_phonemes)
         return Model_phon
@@ -244,7 +241,6 @@ class Phonet:
                         ini=t2[nu]
                 start=t2[0]
                 fin=t2[0]
-                rect=True
                 thr=0.75
                 for nu in range(1,len(df[self.keys_val[l]])):
                     if (df[self.keys_val[l]][nu]>thr and df[self.keys_val[l]][nu-1]<=thr):
@@ -330,7 +326,6 @@ class Phonet:
         Feat=np.stack(Feat, axis=0)
         Feat=Feat-self.MU
         Feat=Feat/self.STD
-        df={}
 
         pred_mat_phon=np.asarray(self.model_phon.predict(Feat))
         pred_mat_phon_seq=np.concatenate(pred_mat_phon,0)

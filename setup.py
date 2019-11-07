@@ -5,6 +5,9 @@ install_requires = [
     'tensorflow',
     'Keras',
     'pandas',
+    'pysptk',
+    'six',
+    'matplotlib',
     'python_speech_features'
 ]
 
@@ -21,3 +24,13 @@ setup(
       packages=find_packages(),
       dependency_links=['git+git://github.com/jameslyons/python_speech_features']
 )
+
+
+
+
+      
+
+
+
+
+

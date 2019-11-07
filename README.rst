@@ -17,6 +17,8 @@ If you are not sure about what phonological classes are, have a look at this
 
 `Project Documentation <http://phonet.readthedocs.org/en/latest/>`_
 
+`Paper <ttp://dx.doi.org/10.21437/Interspeech.2019-1405>`_
+
 The list of the phonological classes available and the phonemes that are activated for each phonological class are observed in the following Table
 
 
@@ -47,7 +49,6 @@ pause                 /sil/
 ==================    ================================================================================
 
 
-
 Installation
 ============
 
@@ -65,25 +66,23 @@ Supported features:
 
 - Estimate probabilities of phonological classes for an audio file
 
-
 `Example use <example.py>`_
-
 
 Estimation of phonological classes
 ====================================
 
 Estimate the phonological classes using the BGRU models for an audio file or for a folder that contains audio files inside::
 
-
       python
-      def get_phon_wav(audio_file, feat_file, phonclass="all", plot_flag=True)
+      phon=Phonet([phonclass])
+      get_phon_wav(self, audio_file, feat_file, plot_flag=True)
 
 ============= ===========
-Parameter     Description
+Parameters     Description
 ============= ===========
 audio_file    file audio (.wav) sampled at 16 kHz
 feat_file     file (.csv) to save the posteriors for the phonological classes
-phonclass     phonological class to be evaluated
+phonclass     list of phonological classes to be evaluated
               The list of phonological classes include:
               "consonantal", "back", "anterior", "open", "close", "nasal", "stop",
               "continuant",  "lateral", "flap", "trill", "voice", "strident",
@@ -91,3 +90,28 @@ phonclass     phonological class to be evaluated
 plot_flag     True or False, whether you want plots of phonological classes or not
 returns			  It crates the feat_file with the estimation of the phonological classes for each time-frame of the audio file.
 ============= ===========
+
+Training
+====================================
+
+If you want to train Phonet in your own language, or specific phonological classes that are not defined here, please refer to the folder `train <https://github.com/jcvasquezc/phonet/tree/master/audios>`_ and follow the instructions there.
+
+If you experienced problems with the Training process, please send me an email `<juan.vasquez@fau.de>`
+
+
+Reference
+==================================
+
+Phonet is available for research purposes
+
+If you use Phonet, please cite the following paper.
+
+@inproceedings{Vasquez-Correa2019,
+  author={J. C. Vásquez-Correa and P. Klumpp and J. R. Orozco-Arroyave and E. N\"oth},
+  title={{Phonet: A Tool Based on Gated Recurrent Neural Networks to Extract Phonological Posteriors from Speech}},
+  year=2019,
+  booktitle={Proc. Interspeech 2019},
+  pages={549--553},
+  doi={10.21437/Interspeech.2019-1405},
+  url={http://dx.doi.org/10.21437/Interspeech.2019-1405}
+}
