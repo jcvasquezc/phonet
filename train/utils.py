@@ -4,6 +4,41 @@ import numpy as np
 from sklearn.metrics import confusion_matrix
 import os
 from six.moves import cPickle as pickle
+from tqdm import tqdm
+from Phonological import Phonological
+
+Phon=Phonological()
+
+def test_labels(directory):
+
+    file_list = os.listdir(directory)
+    file_list.sort()
+    with open(directory+file_list[0], 'rb') as f:
+        save = pickle.load(f)
+    f.close()
+    seq=save['labels']
+    keys=Phon.get_list_phonological_keys()
+
+    pbar=tqdm(range(len(file_list)))
+    percall=np.zeros(len(keys))
+    percall2=np.zeros(len(keys))
+
+    for j in pbar:
+        pbar.set_description("Processing %s" % file_list[j])
+
+        with open(directory+file_list[j], 'rb') as f:
+            save = pickle.load(f)
+        f.close()
+        seq=save['labels']
+        perc1=np.zeros(len(keys))
+        for e, k in enumerate(keys):
+            perc1[e]=np.mean(seq[k])
+        percall+=perc1
+        percall2+=perc1
+
+    percall=percall/len(file_list)
+
+    return percall
 
 
 def get_scaler(directory):
@@ -12,22 +47,40 @@ def get_scaler(directory):
     file_list.sort()
     seq_sum=np.zeros((40,34))
     seq_std=np.zeros((40,34))
-    for i in range(len(file_list)):
-        with open(directory+file_list[i], 'rb') as f:
+    pbar=tqdm(range(len(file_list)))
+    nans=0
+    infs=0
+    for j in pbar:
+        pbar.set_description("Processing %s" % file_list[j])
+        with open(directory+file_list[j], 'rb') as f:
             save = pickle.load(f)
         f.close()
         seq=save['features']
         seq_sum+=seq
-
-    mu=seq_sum/len(file_list)
-    for i in range(len(file_list)):
-        with open(directory+file_list[i], 'rb') as f:
+        if np.sum(np.isnan(seq))>0:
+            nans+=1
+        if np.sum(np.isinf(seq))>0:
+            infs+=1
+    N=len(file_list)
+    mu=seq_sum/N
+    
+    print("--------------------------")
+    print("NAN", nans)
+    print("INF", infs)
+    pbar2=tqdm(range(len(file_list)))
+    for j in pbar2:
+        pbar2.set_description("Processing %s" % file_list[j])
+        with open(directory+file_list[j], 'rb') as f:
             save = pickle.load(f)
         f.close()
         seq=save['features']
         seq_std+=(seq-mu)**2
 
     std=seq_std/len(file_list)
+
+    find0=np.where(std==0)[0]
+    print("std0", len(find0))
+
     return mu, std
 
 def plot_confusion_matrix(y_true, y_pred, classes, file_res, 
@@ -54,7 +107,7 @@ def plot_confusion_matrix(y_true, y_pred, classes, file_res,
         print("Normalized confusion matrix")
     else:
         print('Confusion matrix, without normalization')
-    np.set_printoptions(threshold=np.nan)
+    np.set_printoptions()
     print(cm)
 
     fig, ax = plt.subplots()
@@ -84,4 +137,3 @@ def plot_confusion_matrix(y_true, y_pred, classes, file_res,
     plt.tight_layout()
     plt.savefig(file_res)
     return ax
-

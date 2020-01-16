@@ -6,6 +6,7 @@ import numpy as np
 PATH=os.path.dirname(os.path.abspath(__file__))
 sys.path.append(PATH)
 from Phonological import Phonological
+from tqdm import tqdm
 
 if __name__=="__main__":
     if len(sys.argv)!=4:
@@ -28,10 +29,9 @@ if __name__=="__main__":
 
     Feat=[]
     warnings=0
-
-    for j in range(len(hf)):
-        print("-----------------------------------")
-        print(hf[j], hf[j] in path_lab, j, len(hf))
+    pbar=tqdm(range(len(hf)))
+    for j in pbar:
+        pbar.set_description("Processing %s" % hf[j])
         pickle_file1=path_feat+hf[j]
         if not (hf[j] in hf2):
             print("warning, file labels not found in audio", hf[j])
@@ -64,6 +64,7 @@ if __name__=="__main__":
             for k in list_phonokeys:
                 Lab[k]=np.stack(Lab[k], axis=0)
                 Lab[k]=np.expand_dims(Lab[k], axis=2)
+            
 
             save={'features': featmat_t, 'labels':Lab}
             file_lab=path_seq+hf[j].replace('.pickle', '')+'_'+str(r)+'.pickle'

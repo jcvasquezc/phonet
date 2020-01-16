@@ -13,11 +13,12 @@ import os
 if __name__=="__main__":
 
     PATH=os.path.dirname(os.path.abspath(__file__))
-    phon=Phonet(["stop"])
+    
 
-    # get the "stop" phonological posterior from a single file
+    ## get the "stop" phonological posterior from a single file
     file_audio=PATH+"/audios/pataka.wav"
     file_feat=PATH+"/phonclasses/pataka"
+    phon=Phonet(["stop"])
     phon.get_phon_wav(file_audio, file_feat, True)
 
     # get the "nasal" phonological posterior from a single file
@@ -31,7 +32,7 @@ if __name__=="__main__":
     phon=Phonet(["strident"])
     phon.get_phon_wav(file_audio, file_feat, True)
 
-    # get "strident, nasl, and back" phonological posteriors from a single file
+    # get "strident, nasal, and back" phonological posteriors from a single file
     file_feat=PATH+"/phonclasses/sentence_all"
     phon=Phonet(["strident", "nasal", "back"])
     phon.get_phon_wav(file_audio, file_feat, True)
@@ -47,4 +48,7 @@ if __name__=="__main__":
     phon=Phonet(["vocalic", "strident", "nasal", "back", "stop", "pause"])
     phon.get_phon_path(PATH+"/audios/", PATH+"/phonclasses2/")
 
-    
+    ## get the PLLR features from an audio file
+    phon=Phonet(["all"])
+    PLLR=phon.get_PLLR(file_audio, plot_flag=True)
+    print(PLLR.head())

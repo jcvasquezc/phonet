@@ -7,11 +7,11 @@ import pysptk.sptk as sptk
 from six.moves import cPickle as pickle
 
 import python_speech_features as pyfeat
-
+from tqdm import tqdm
 
 def extract_feat(signal,fs):
-    size_frame=0.015
-    time_shift=0.015
+    size_frame=0.025
+    time_shift=0.010
     order=13
     nfilt=33
     signal=signal-np.mean(signal)
@@ -35,11 +35,11 @@ if __name__=="__main__":
 
     hf=os.listdir(path_audios)
     hf.sort()
-    for j in range(len(hf)):
+    pbar=tqdm(range(len(hf)))
+    for j in pbar:
+        pbar.set_description("Processing %s" % hf[j])
         fs,data=read(path_audios+hf[j])
         feat=extract_feat(data,fs)
-        print(hf[j],feat.shape)
-        #sys.exit()
         file_results=path_features+hf[j].replace(".wav", ".pickle")
         try:
             f = open(file_results, 'wb')
@@ -47,3 +47,4 @@ if __name__=="__main__":
             f.close()
         except Exception as e:
             print('Unable to save data to', file_results, ':', e)
+

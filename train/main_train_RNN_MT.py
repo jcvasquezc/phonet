@@ -6,32 +6,37 @@ from keras.utils import np_utils
 from keras.models import Model
 from keras import optimizers
 import keras.backend as K
-from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.callbacks import EarlyStopping, ModelCheckpoint, tensorboard_v1
 
 import numpy as np
 import os
-from utils import plot_confusion_matrix
 from sklearn.metrics import classification_report, recall_score, precision_score, f1_score
 #import pandas as pd
 
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
+from utils import plot_confusion_matrix
+
 from sklearn.utils import class_weight
 
-from utils import confusion_matrix, get_scaler
+from utils import confusion_matrix, get_scaler, test_labels
 
 from Phonological import Phonological
 
 Phon=Phonological()
 
+
+
+
 def generate_data(directory, batch_size, mu, std):
     i = 0
     file_list = os.listdir(directory)
     file_list.sort()
+    keys=Phon.get_list_phonological_keys()
     while True:
         seq_batch = []
-        keys=Phon.get_list_phonological_keys()
+        
         y={}
         for k in keys:
             y[k]=[]
@@ -141,7 +146,6 @@ def DeepArch(input_size, GRU_size, hidden_size, num_labels, names, Learning_rate
 
 
 
-
 if __name__=="__main__":
 
     if len(sys.argv)!=4:
@@ -158,37 +162,46 @@ if __name__=="__main__":
     if not os.path.exists(file_results):
         os.makedirs(file_results)
 
-    mu, std=get_scaler(file_feat_train)
 
-    np.save(file_results+"mu.npy", mu)
-    np.save(file_results+"std.npy", std)
+    checkpointer = ModelCheckpoint(filepath=file_results+'weights.hdf5', verbose=1, save_best_only=True)
+
+    #perc=test_labels(file_feat_test)
+    #print("perc_classes=", perc)
+
+
+
+    if os.path.exists(file_results+'mu.npy'):
+
+        mu=np.load(file_results+"mu.npy")
+        std=np.load(file_results+"std.npy")
+    else:
+        mu, std=get_scaler(file_feat_train)
+
+        np.save(file_results+"mu.npy", mu)
+        np.save(file_results+"std.npy", std)
 
     input_size=(40,34)
-    GRU_size=64
-    hidden=64
+    GRU_size=128
+    hidden=128
     keys=Phon.get_list_phonological_keys()
     num_labels=[2 for j in range(len(keys))]
-    Learning_rate=0.0005
+    Learning_rate=0.0001
     recurrent_droput_prob=0.0
     epochs=1000
-    batch_size=16
+    batch_size=64
 
 
     modelPH=DeepArch(input_size, GRU_size, hidden, num_labels, keys, Learning_rate, recurrent_droput_prob)
     print(modelPH.summary())
 
-    steps_per_epoch=int(Nfiles_train/batch_size)
+    steps_per_epoch=int(Nfiles_train/batch_size)#
     validation_steps=int(Nfiles_test/batch_size)
-
-
-
-    checkpointer = ModelCheckpoint(filepath=file_results+'weights.hdf5', verbose=1, save_best_only=True)
 
     if os.path.exists(file_results+'weights.hdf5'):
         modelPH.load_weights(file_results+'weights.hdf5')
         
     earlystopper = EarlyStopping(monitor='val_loss', patience=15, verbose=0)
-    history=modelPH.fit_generator(generate_data(file_feat_train, batch_size, mu, std), steps_per_epoch=steps_per_epoch, 
+    history=modelPH.fit_generator(generate_data(file_feat_train, batch_size, mu, std), steps_per_epoch=steps_per_epoch, workers=4, use_multiprocessing=True,
     epochs=epochs, shuffle=True, validation_data=generate_data(file_feat_test, batch_size, mu, std), 
     verbose=1, callbacks=[earlystopper, checkpointer], validation_steps=validation_steps)
 
@@ -260,4 +273,5 @@ if __name__=="__main__":
     
         F.write(content)
     F.close()
+
 

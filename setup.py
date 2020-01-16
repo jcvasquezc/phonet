@@ -8,12 +8,13 @@ install_requires = [
     'pysptk',
     'six',
     'matplotlib',
-    'python_speech_features'
+    'python_speech_features',
+    'tqdm'
 ]
 
 setup(
       name='phonet',
-      version='1.0.0',
+      version='0.2',
       description='Compute phonological posteriors from speech signals using a deep learning scheme',
       author='J. C. Vasquez-Correa',
       author_email='juan.vasquez@fau.de',

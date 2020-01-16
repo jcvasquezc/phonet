@@ -45,15 +45,17 @@ pause                 /sil/
    :maxdepth: 3
 
    help
+   reference
 
 
 
 Supported features:
 
-- :py:meth:`phonet.get_phon_wav` - Estimate the phonological classes for an audio file (.wav).
-- :py:meth:`phonet.get_phon_path` - Estimate the phonological classes for a folder that contains audio files (.wav) inside.
-- :py:meth:`phonet.get_posteriorgram` - Plot the posteriorgram for an audio file (.wav).
-
+- :py:meth:`phonet.model` - This is the architecture used for the estimation of the phonological classes using a multitask learning strategy. It consists of a 2 Bidirectional GRU layers, followed by a time-distributed dense layer
+- :py:meth:`phonet.get_phon_wav` - Estimate the phonological classes using the BGRU models for an audio file (.wav)
+- :py:meth:`phonet.get_phon_path` - Estimate the phonological classes using the BGRU models for all the (.wav) audio files included inside a directory.
+- :py:meth:`phonet.get_posteriorgram` - Estimate the posteriorgram for an audio file (.wav) sampled at 16kHz.
+- :py:meth:`phonet.get_PLLR` - Estimate the phonological log-likelihood ratio (PLLR) features for an audio file (.wav) sampled at 16kHz.
 
 Installation
 -------------------------------------

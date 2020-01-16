@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to Phonet’s documentation! &mdash; phonet 0.1 documentation</title>
+  <title>Welcome to Phonet’s documentation! &mdash; phonet 0.2 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.1
+                0.2
               </div>
             
           
@@ -83,6 +83,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="help.html">Need Help?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">References</a></li>
 </ul>
 
             
@@ -224,13 +225,16 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="help.html">Need Help?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">References</a></li>
 </ul>
 </div>
 <p>Supported features:</p>
 <ul class="simple">
-<li><code class="xref py py-meth docutils literal"><span class="pre">phonet.get_phon_wav()</span></code> - Estimate the phonological classes for an audio file (.wav).</li>
-<li><code class="xref py py-meth docutils literal"><span class="pre">phonet.get_phon_path()</span></code> - Estimate the phonological classes for a folder that contains audio files (.wav) inside.</li>
-<li><code class="xref py py-meth docutils literal"><span class="pre">phonet.get_posteriorgram()</span></code> - Plot the posteriorgram for an audio file (.wav).</li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">phonet.model()</span></code> - This is the architecture used for the estimation of the phonological classes using a multitask learning strategy. It consists of a 2 Bidirectional GRU layers, followed by a time-distributed dense layer</li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">phonet.get_phon_wav()</span></code> - Estimate the phonological classes using the BGRU models for an audio file (.wav)</li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">phonet.get_phon_path()</span></code> - Estimate the phonological classes using the BGRU models for all the (.wav) audio files included inside a directory.</li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">phonet.get_posteriorgram()</span></code> - Estimate the posteriorgram for an audio file (.wav) sampled at 16kHz.</li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">phonet.get_PLLR()</span></code> - Estimate the phonological log-likelihood ratio (PLLR) features for an audio file (.wav) sampled at 16kHz.</li>
 </ul>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
@@ -244,11 +248,64 @@
 <div class="section" id="module-phonet">
 <span id="methods"></span><h2>Methods<a class="headerlink" href="#module-phonet" title="Permalink to this headline">¶</a></h2>
 <p>Compute posteriors probabilities of phonological classes from audio files for several groups of phonemes according to the mode and manner of articulation.
-Author: Camilo Vasquez-Correa 2019</p>
+&#64;author: J. C. Vasquez-Correa</p>
+<blockquote>
+<div>Pattern recognition Lab, University of Erlangen-Nuremberg
+Faculty of Engineering, University of Antioquia,
+<a class="reference external" href="mailto:juan&#46;vasquez&#37;&#52;&#48;fau&#46;de">juan<span>&#46;</span>vasquez<span>&#64;</span>fau<span>&#46;</span>de</a></div></blockquote>
 <dl class="class">
 <dt id="phonet.Phonet">
-<em class="property">class </em><code class="descclassname">phonet.</code><code class="descname">Phonet</code><span class="sig-paren">(</span><em>phonological</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<em class="property">class </em><code class="descclassname">phonet.</code><code class="descname">Phonet</code><span class="sig-paren">(</span><em>phonological_classes</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Phonet computes posteriors probabilities of phonological classes from audio files for several groups of phonemes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>phonological_classes</strong> &#8211; phonological class to be evaluated (&#8220;consonantal&#8221;, &#8220;back&#8221;, &#8220;anterior&#8221;, &#8220;open&#8221;, &#8220;close&#8221;, &#8220;nasal&#8221;, &#8220;stop&#8221;,
+&#8220;continuant&#8221;,  &#8220;lateral&#8221;, &#8220;flap&#8221;, &#8220;trill&#8221;, &#8220;voice&#8221;, &#8220;strident&#8221;,
+&#8220;labial&#8221;, &#8220;dental&#8221;, &#8220;velar&#8221;, &#8220;pause&#8221;, &#8220;vocalic&#8221;, &#8220;all&#8221;).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Phonet Object (see <a class="reference external" href="https://github.com/jcvasquezc/phonet/blob/master/example.py">Examples</a>).</td>
+</tr>
+</tbody>
+</table>
+<p>phonological_classes==&#8217;all&#8217; computes the phonological posterior for the complete list of phonological classes.</p>
+<dl class="method">
+<dt id="phonet.Phonet.get_PLLR">
+<code class="descname">get_PLLR</code><span class="sig-paren">(</span><em>audio_file</em>, <em>feat_file=''</em>, <em>projected=True</em>, <em>plot_flag=False</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.get_PLLR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the phonological log-likelihood ratio (PLLR) features for an audio file (.wav) sampled at 16kHz</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>audio_file</strong> &#8211; file audio (.wav) sampled at 16 kHz</li>
+<li><strong>feat_file</strong> &#8211; .csv file  to save the PLLR features for the phonological classes. Deafult=&#8221;&#8221; does not save the csv file</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Projected:</th><td class="field-body"><p class="first">whether to make a projection of the feature space of the PLLR according to [1], in order to avoid the bounding effect.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Plot_flag:</th><td class="field-body"><p class="first">True or False. Plot distributions of the feature space</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Pandas dataFrame with the PLLR features</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">=</span><span class="n">Phonet</span><span class="p">([</span><span class="s2">&quot;all&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_audio</span><span class="o">=</span><span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;/audios/sentence.wav&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">.</span><span class="n">get_PLLR</span><span class="p">(</span><span class="n">file_audio</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>References:</p>
+<p>[1] Diez, M., Varona, A., Penagarikano, M., Rodriguez-Fuentes, L. J., &amp; Bordel, G. (2014). On the projection of PLLRs for unbounded feature distributions in spoken language recognition. IEEE Signal Processing Letters, 21(9), 1073-1077.</p>
+<p>[2] Abad, A., Ribeiro, E., Kepler, F., Astudillo, R. F., &amp; Trancoso, I. (2016). Exploiting Phone Log-Likelihood Ratio Features for the Detection of the Native Language of Non-Native English Speakers. In INTERSPEECH (pp. 2413-2417).</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="phonet.Phonet.get_feat">
 <code class="descname">get_feat</code><span class="sig-paren">(</span><em>signal</em>, <em>fs</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.get_feat" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method extracts log-Mel-filterbank energies used as inputs
@@ -270,7 +327,7 @@ of the model.</p>
 </table>
 </dd></dl>
 
-<dl class="method">   
+<dl class="method">
 <dt id="phonet.Phonet.get_phon_path">
 <code class="descname">get_phon_path</code><span class="sig-paren">(</span><em>audio_path</em>, <em>feat_path</em>, <em>plot_flag=False</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.get_phon_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimate the phonological classes using the BGRU models for all the (.wav) audio files included inside a directory</p>
@@ -281,9 +338,6 @@ of the model.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>audio_path</strong> &#8211; directory with (.wav) audio files inside, sampled at 16 kHz</li>
 <li><strong>feat_path</strong> &#8211; directory were the computed phonological posteriros will be stores as a (.csv) file per (.wav) file from the input directory</li>
-<li><strong>phonclass</strong> &#8211; phonological class to be evaluated (&#8220;consonantal&#8221;, &#8220;back&#8221;, &#8220;anterior&#8221;, &#8220;open&#8221;, &#8220;close&#8221;, &#8220;nasal&#8221;, &#8220;stop&#8221;,
-&#8220;continuant&#8221;,  &#8220;lateral&#8221;, &#8220;flap&#8221;, &#8220;trill&#8221;, &#8220;voice&#8221;, &#8220;strident&#8221;,
-&#8220;labial&#8221;, &#8220;dental&#8221;, &#8220;velar&#8221;, &#8220;pause&#8221;, &#8220;vocalic&#8221;, &#8220;all&#8221;).</li>
 <li><strong>plot_flag</strong> &#8211; True or False, whether you want plots of phonological classes or not</li>
 </ul>
 </td>
@@ -293,8 +347,7 @@ of the model.</p>
 </tr>
 </tbody>
 </table>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">directory</span><span class="o">=</span><span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;/phonclasses/&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">=</span><span class="n">Phonet</span><span class="p">([</span><span class="s2">&quot;vocalic&quot;</span><span class="p">,</span> <span class="s2">&quot;strident&quot;</span><span class="p">,</span> <span class="s2">&quot;nasal&quot;</span><span class="p">,</span> <span class="s2">&quot;back&quot;</span><span class="p">,</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span> <span class="s2">&quot;pause&quot;</span><span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">=</span><span class="n">Phonet</span><span class="p">([</span><span class="s2">&quot;vocalic&quot;</span><span class="p">,</span> <span class="s2">&quot;strident&quot;</span><span class="p">,</span> <span class="s2">&quot;nasal&quot;</span><span class="p">,</span> <span class="s2">&quot;back&quot;</span><span class="p">,</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span> <span class="s2">&quot;pause&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phon</span><span class="o">.</span><span class="n">get_phon_path</span><span class="p">(</span><span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;/audios/&quot;</span><span class="p">,</span> <span class="n">PATH</span><span class="o">+</span><span class="s2">&quot;/phonclasses2/&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -302,7 +355,7 @@ of the model.</p>
 
 <dl class="method">
 <dt id="phonet.Phonet.get_phon_wav">
-<code class="descname">get_phon_wav</code><span class="sig-paren">(</span><em>audio_file</em>, <em>feat_file</em>, <em>plot_flag=True</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.get_phon_wav" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_phon_wav</code><span class="sig-paren">(</span><em>audio_file</em>, <em>feat_file=''</em>, <em>plot_flag=True</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.get_phon_wav" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimate the phonological classes using the BGRU models for an audio file (.wav)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -310,15 +363,12 @@ of the model.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>audio_file</strong> &#8211; file audio (.wav) sampled at 16 kHz</li>
-<li><strong>feat_file</strong> &#8211; file (.csv) to save the posteriors for the phonological classes</li>
-<li><strong>phonclass</strong> &#8211; phonological class to be evaluated (&#8220;consonantal&#8221;, &#8220;back&#8221;, &#8220;anterior&#8221;, &#8220;open&#8221;, &#8220;close&#8221;, &#8220;nasal&#8221;, &#8220;stop&#8221;,
-&#8220;continuant&#8221;,  &#8220;lateral&#8221;, &#8220;flap&#8221;, &#8220;trill&#8221;, &#8220;voice&#8221;, &#8220;strident&#8221;,
-&#8220;labial&#8221;, &#8220;dental&#8221;, &#8220;velar&#8221;, &#8220;pause&#8221;, &#8220;vocalic&#8221;, &#8220;all&#8221;).</li>
+<li><strong>feat_file</strong> &#8211; . File (.csv) to save the posteriors for the phonological classes. Deafult=&#8221;&#8221; does not save the csv file</li>
 <li><strong>plot_flag</strong> &#8211; True or False, whether you want plots of phonological classes or not</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A csv file created at FEAT_FILE with the posterior probabilities for the phonological classes.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A pandas dataFrame with the posterior probabilities for the phonological classes.</p>
 </td>
 </tr>
 </tbody>
@@ -364,22 +414,55 @@ of the model.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="phonet.Phonet.model">
-<code class="descname">model</code><span class="sig-paren">(</span><em>input_size</em>, <em>num_labels=2</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.model" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the architecture used for the estimation of the phonological classes
-It consists of a 2 Bidirectional GRU layers, followed by a time-distributed dense layer</p>
+<dt id="phonet.Phonet.mask_correction">
+<code class="descname">mask_correction</code><span class="sig-paren">(</span><em>posterior</em>, <em>threshold=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.mask_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements a mask for a correction the posterior probabilities</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input_size</strong> &#8211; size of input for the BGRU layers (number of features x sequence length).</li>
-<li><strong>num_labels</strong> &#8211; number of labels to be recogized by the DNN (2 for phonological posteriros and 21 for the phoneme recogizer).</li>
+<li><strong>posterior</strong> &#8211; phonological posterior.</li>
+<li><strong>threshold</strong> &#8211; threshold for correction</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A Keras model of a 2-layer BGRU neural network.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Corrected phonological posterior.</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phonet.Phonet.model">
+<code class="descname">model</code><span class="sig-paren">(</span><em>input_size</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the architecture used for the estimation of the phonological classes using a multitask learning strategy
+It consists of a 2 Bidirectional GRU layers, followed by a time-distributed dense layer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>input_size</strong> &#8211; size of input for the BGRU layers (number of features x sequence length).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A Keras model of a 2-layer BGRU neural network.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phonet.Phonet.modelp">
+<code class="descname">modelp</code><span class="sig-paren">(</span><em>input_size</em><span class="sig-paren">)</span><a class="headerlink" href="#phonet.Phonet.modelp" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the architecture used for phoneme recognition
+It consists of a 2 Bidirectional GRU layers, followed by a time-distributed dense layer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>input_size</strong> &#8211; size of input for the BGRU layers (number of features x sequence length).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A Keras model of a 2-layer BGRU neural network.</td>
 </tr>
 </tbody>
 </table>
@@ -458,7 +541,7 @@ It consists of a 2 Bidirectional GRU layers, followed by a time-distributed dens
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1',
+            VERSION:'0.2',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

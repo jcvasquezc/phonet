@@ -9,7 +9,7 @@ import pandas as pd
 PATH=os.path.dirname(os.path.abspath(__file__))
 sys.path.append(PATH)
 from Phonological import Phonological
-
+from tqdm import tqdm
 
 
 def phoneme2list_phonological(phoneme):
@@ -23,24 +23,20 @@ def phoneme2list_phonological(phoneme):
     return list_phon_values,list_phonological
 
 
-
 def phoneme2number(phoneme):
     Phon=Phonological()
     list_phonemes=Phon.get_list_phonemes()
-    try:
-        number=list_phonemes.index(phoneme)
+    number=np.where(list_phonemes==phoneme)[0]
+    if len(number)>0:
         return number
-    except:
+    else:
         print("phoneme:*"+ phoneme+"*is not in the list")
         sys.exit()
         return np.nan
 
 
-
-
-
 def read_textgrid(list_textgrid):
-    time_shift=0.015
+    time_shift=0.01
     pos_start_phonemes=list_textgrid.index("item[3]:")
     n_phonemes=int(list_textgrid[pos_start_phonemes+5].replace("intervals:size=",""))
     list_phonemes=[list_textgrid[j] for j in range(pos_start_phonemes+6,len(list_textgrid))]
@@ -89,7 +85,9 @@ if __name__=="__main__":
 
     hf=os.listdir(path_textgrid)
     hf.sort()
-    for j in range(len(hf)):
+    pbar=tqdm(range(len(hf)))
+    for j in pbar:
+        pbar.set_description("Processing %s" % hf[j])
         f=open(path_textgrid+hf[j], "r")
         data=f.readlines()
         f.close()
@@ -98,7 +96,6 @@ if __name__=="__main__":
             datat=data[k].replace(" ","")
             data2.append(datat.replace("\n",""))
         list_phon, list_labels=read_textgrid(data2)
-        print(hf[j],len(list_labels["n_frame"]))
         #sys.exit()
         file_results=path_labels+hf[j].replace(".TextGrid", ".pickle")
         try:
