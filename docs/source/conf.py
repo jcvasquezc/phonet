@@ -23,7 +23,9 @@ class Mock(MagicMock):
    def __getattr__(cls, name):
        return MagicMock()
 
-MOCK_MODULES = []
+MOCK_MODULES = ['tensorflow', 'tensorflow.python', 'tensorflow.python.framework', 'tensorflow.python.training',
+                'tensorflow.python.ops', 'tensorflow.python.client','tensorflow.core','matplotlib', 'matplotlib.pyplot',
+                'matplotlib.patches','tensorflow.core.protobuf', 'tensorflow.python.eager', 'tensorflow.python.keras', 'tensorflow.python.keras.utils']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -32,7 +34,7 @@ sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 #
 
 sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0,os.path.abspath('../..'))
+sys.path.insert(0,os.path.abspath('../../'))
 
 
 # -- General configuration ------------------------------------------------
