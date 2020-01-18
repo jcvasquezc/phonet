@@ -1,0 +1,21 @@
+name: phonet
+
+channels:
+    - anaconda
+
+dependencies:
+    - python==3.7
+    - tensorflow
+    - pip:
+        - keras
+        - pandas
+        - pysptk
+        - six
+        - matplotlib
+        - python_speech_features
+        - tqdm
+        - sphinx-gallery
+        - sphinxcontrib-napoleon
+        - sphinxcontrib-bibtex
+        - sphinxcontrib-inlinesyntaxhighlight
+
