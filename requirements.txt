@@ -1,5 +1,4 @@
 --index-url https://pypi.python.org/simple/
 
 -e .
-mock
 matplotlib==2.2.2
