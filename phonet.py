@@ -250,6 +250,9 @@ class Phonet:
         pred_vec_phon=np.argmax(pred_mat_phon_seq,1)
 
         nf=int(len(signal)/(self.time_shift*fs)-1)
+        if nf>len(pred_vec_phon):
+            nf=len(pred_vec_phon)
+        
         phonemes_list=self.number2phoneme(pred_vec_phon[:nf])
 
         t2=np.arange(nf)*self.time_shift
