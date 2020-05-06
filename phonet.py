@@ -168,7 +168,7 @@ class Phonet:
         signal=signal-np.mean(signal)
         signal=signal/np.max(np.abs(signal))
         mult = int(fs*self.size_frame*self.len_seq)
-        fill = (mult - len(signal) % mult) % mult + int(fs * self.size_frame)
+        fill = int(self.len_seq*self.time_shift*fs)
         fillv=0.05*np.random.randn(fill)
         signal=np.hstack((signal,fillv))
         Fbank, energy=pyfeat.fbank(signal,samplerate=fs,winlen=self.size_frame,winstep=self.time_shift,
