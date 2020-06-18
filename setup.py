@@ -19,7 +19,7 @@ install_requires = [
 
 setup(
     name='phonet',
-    version='0.3',
+    version='0.3.1',
     description='Compute phonological posteriors from speech signals using a deep learning scheme',
     author='J. C. Vasquez-Correa',
     author_email='juan.vasquez@fau.de',
