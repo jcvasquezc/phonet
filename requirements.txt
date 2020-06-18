@@ -1,6 +1,7 @@
 --index-url https://pypi.python.org/simple/
 
 -e .
+numpy
 tqdm==4.23.4
 pysptk==0.1.7
 setuptools==42.0.2
