@@ -24,7 +24,7 @@ setup(
     author='J. C. Vasquez-Correa',
     author_email='juan.vasquez@fau.de',
     url='https://github.com/jcvasquezc/phonet',
-    download_url='https://github.com/jcvasquezc/phonet/archive/v_03.tar.gz',
+    download_url='https://github.com/jcvasquezc/phonet/archive/0.3.tar.gz',
     license='MIT',
     install_requires=install_requires,
     packages=find_packages(),
