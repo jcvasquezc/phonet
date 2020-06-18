@@ -13,7 +13,10 @@ import python_speech_features as pyfeat
 from scipy.io.wavfile import read
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
+plt.rcParams["font.family"] = "Times New Roman"
+from matplotlib.patches import Rectangle, Ellipse
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
+from scipy.signal import resample_poly
 
 from keras.layers import Input, BatchNormalization, Bidirectional, GRU, Permute, Dropout, Dense, TimeDistributed
 from keras.utils import np_utils
@@ -21,7 +24,7 @@ from keras.models import Model
 from keras import optimizers
 import gc
 from keras import backend as K
-
+from matplotlib import cm
 from Phonological import Phonological
 from tqdm import tqdm
 
@@ -153,9 +156,6 @@ class Phonet:
         modelGRU.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['categorical_accuracy'], sample_weight_mode="temporal", loss_weights=alphas)
         return modelGRU
 
-
-
-
     def get_feat(self, signal, fs):
         """
         This method extracts log-Mel-filterbank energies used as inputs
@@ -167,9 +167,9 @@ class Phonet:
         """
         signal=signal-np.mean(signal)
         signal=signal/np.max(np.abs(signal))
-        fill=len(signal)%int(fs*self.size_frame*self.len_seq)
+        fill=int(self.len_seq*self.time_shift*fs)
 
-        fillv=0.05*np.random.randn(fill)-self.size_frame
+        fillv=0.05*np.random.randn(fill)
         signal=np.hstack((signal,fillv))
         Fbank, energy=pyfeat.fbank(signal,samplerate=fs,winlen=self.size_frame,winstep=self.time_shift,
           nfilt=self.nfilt,nfft=512,lowfreq=0,highfreq=None,preemph=0.97)
@@ -229,9 +229,13 @@ class Phonet:
 
         fs, signal=read(audio_file)
         if fs!=16000:
-            raise ValueError(str(fs)+" is not a valid sampling frequency")
+            #raise ValueError(str(fs)+" is not a valid sampling frequency")
+            signal=resample_poly(signal, 16000, fs)
+            fs=16000
         feat=self.get_feat(signal,fs)
+
         nf=int(feat.shape[0]/self.len_seq)
+
         start=0
         fin=self.len_seq
         Feat=[]
@@ -250,6 +254,9 @@ class Phonet:
         pred_vec_phon=np.argmax(pred_mat_phon_seq,1)
 
         nf=int(len(signal)/(self.time_shift*fs)-1)
+        if nf>len(pred_vec_phon):
+            nf=len(pred_vec_phon)
+        
         phonemes_list=self.number2phoneme(pred_vec_phon[:nf])
 
         t2=np.arange(nf)*self.time_shift
@@ -271,8 +278,9 @@ class Phonet:
         
         if plot_flag:
             n_plots=int(np.ceil(len(self.keys_val)/4))
-            figsize=(8,int(n_plots*4))
-            colors=['b', 'g', 'c', 'm']*n_plots
+            figsize=(6,int(n_plots*3))
+            colors = cm.get_cmap('Accent', 5)
+            col_order=[0,1,2,3]*n_plots
             plt.figure(figsize=figsize)
         for l, problem in enumerate(self.keys_val):
 
@@ -285,16 +293,17 @@ class Phonet:
                     plt.subplot(n_plots,1, subp)
                     t=np.arange(len(signal))/fs
                     signal=signal-np.mean(signal)
-                    plt.plot(t,signal/np.max(np.abs(signal)), 'k', alpha=0.5)
+                    plt.plot(t,signal/np.max(np.abs(signal)), color=colors.colors[4], alpha=0.5)
                     plt.grid()
 
-                plt.plot(t2,df[problem], colors[l], label=problem)
+                plt.plot(t2,df[problem],  color=colors.colors[col_order[l]], label=problem, linewidth=2)
                 ini=t2[0]
                 for nu in range(1,len(phonemes_list)):
                     if phonemes_list[nu]!=phonemes_list[nu-1] or nu==len(phonemes_list)-1:
                         difft=t2[nu]-ini
                         plt.text(x=ini+difft/2, y=1, s=phonemes_list[nu-1], color="k", fontsize=10)
                         ini=t2[nu]
+                """
                 start=t2[0]
                 fin=t2[0]
                 thr=0.5
@@ -310,7 +319,10 @@ class Phonet:
                         difft=fin-start
                         currentAxis = plt.gca()
                         currentAxis.add_patch(Rectangle((start,-1),width=difft,height=2,color=colors[l],alpha=0.3))
-                plt.legend()
+                """
+                plt.xlabel("Time (s)")
+                plt.ylabel("Phonological posteriors")
+                plt.legend(loc=8, ncol=2)
 
         if plot_flag:
             plt.tight_layout()
@@ -443,11 +455,12 @@ class Phonet:
         dfPLLR={}
         dfPLLR["time"]=df["time"]
         PLLR=np.zeros((len(df["time"]), len(self.keys_val)))
+        post=np.zeros((len(df["time"]), len(self.keys_val)))
         
         for l, problem in enumerate(self.keys_val):
 
             PLLR[:,l]=np.log10(df[problem]/(1-df[problem]))
-
+            post[:,l]=df[problem]
         if projected:
             N=PLLR.shape[1]
             I=np.identity(N)
@@ -456,21 +469,30 @@ class Phonet:
             PLLRp=np.matmul(PLLR,P)
 
             if plot_flag:
-                figsize=(10,5)
-                colors=['b', 'g', 'c', 'm']
-                plt.figure(figsize=figsize)
+                figsize=(10,3)
                 
-                for k in range(4):
-                    plt.subplot(121)
-                    indexes=np.random.randint(0,PLLR.shape[1], 2)
-                    plt.scatter(PLLR[:,indexes[0]],PLLR[:,indexes[1]], c=colors[k], alpha=0.5, s=50, label=self.keys_val[indexes[0]]+" vs. "+self.keys_val[indexes[1]])
-                    if k==3:
-                        plt.title("PLLR")
-                    plt.subplot(122)
-                    plt.scatter(PLLRp[:,indexes[0]],PLLRp[:,indexes[1]], c=colors[k], alpha=0.5, s=50, label=self.keys_val[indexes[0]]+" vs. "+self.keys_val[indexes[1]])
-                    if k==3:
-                        plt.title("Projected PLLR")
-                plt.legend()
+                fig=plt.figure(figsize=figsize)
+                
+                ax = fig.add_subplot(131, projection='3d')
+                indexes=np.random.randint(0,PLLR.shape[1], 3)
+                ax.scatter(post[:,indexes[0]],post[:,indexes[1]], post[:,indexes[2]], c='b', alpha=0.2, s=20)
+                ax.set_xlabel(self.keys_val[indexes[0]])
+                ax.set_ylabel(self.keys_val[indexes[1]])
+                ax.set_zlabel(self.keys_val[indexes[2]])
+                plt.title("Posteriors")
+                ax = fig.add_subplot(132, projection='3d')
+                ax.scatter(PLLR[:,indexes[0]],PLLR[:,indexes[1]],PLLR[:,indexes[2]], c='b', alpha=0.2, s=20)
+                ax.set_xlabel(self.keys_val[indexes[0]])
+                ax.set_ylabel(self.keys_val[indexes[1]])
+                ax.set_zlabel(self.keys_val[indexes[2]])
+                plt.title("PLLR")
+                ax = fig.add_subplot(133, projection='3d')
+                ax.scatter(PLLRp[:,indexes[0]],PLLRp[:,indexes[1]],PLLRp[:,indexes[2]], c='b', alpha=0.2, s=20)
+                ax.set_xlabel(self.keys_val[indexes[0]])
+                ax.set_ylabel(self.keys_val[indexes[1]])
+                ax.set_zlabel(self.keys_val[indexes[2]])
+                plt.title("Projected PLLR")
+                plt.tight_layout()
         
         for l, problem in enumerate(self.keys_val):
             if projected:
@@ -479,10 +501,11 @@ class Phonet:
                 dfPLLR[problem]=PLLR[:,l]
 
         if plot_flag:
-            nrows=int(np.ceil(len(self.keys_val)/4))
             ncols=2
+            nrows=int(np.ceil(len(self.keys_val)/4))
             figsize=(6,int(nrows*4))
-            colors=['b', 'g', 'c', 'm']*nrows
+            colors = cm.get_cmap('Accent', 4)
+            colorsn=[0,1,2,3]*len(self.keys_val)
             plt.figure(figsize=figsize)
             for l, problem in enumerate(self.keys_val):
 
@@ -490,11 +513,11 @@ class Phonet:
                     subp1=int(2*l/4+1)
                     subp2=int(2*l/4+2)
                 plt.subplot(nrows,ncols, subp1)
-                plt.hist(df[problem], color=colors[l], label=problem, alpha=0.5)
+                plt.hist(df[problem], color=colors.colors[colorsn[l]], label=problem, alpha=0.5)
                 if l==len(self.keys_val)-1:
                     plt.xlabel("Phonological posteriors")
                 plt.subplot(nrows,ncols, subp2)
-                plt.hist(dfPLLR[problem], color=colors[l], label=problem, alpha=0.5)
+                plt.hist(dfPLLR[problem], color=colors.colors[colorsn[l]], label=problem, alpha=0.5)
                 if l==len(self.keys_val)-1:
                     plt.xlabel("PLLR")
                 plt.legend()
