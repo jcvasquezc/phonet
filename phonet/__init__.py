@@ -1,2 +1,2 @@
-from phonet import Phonet
-from Phonological import Phonological
+from phonet.phonet import Phonet
+from phonet.Phonological import Phonological

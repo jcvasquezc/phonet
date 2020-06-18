@@ -208,6 +208,7 @@ class Phonet:
         :param plot_flag: True or False, whether you want plots of phonological classes or not
         :returns: A pandas dataFrame with the posterior probabilities for the phonological classes.
         
+        >>> from phonet.phonet import Phonet
         >>> phon=Phonet(["stop"]) # get the "stop" phonological posterior from a single file
         >>> file_audio=PATH+"/audios/pataka.wav"
         >>> file_feat=PATH+"/phonclasses/pataka"
@@ -331,6 +332,7 @@ class Phonet:
         :param plot_flag: True or False, whether you want plots of phonological classes or not
         :returns: A directory with csv files created with the posterior probabilities for the phonological classes.
 
+        >>> from phonet.phonet import Phonet
         >>> phon=Phonet(["vocalic", "strident", "nasal", "back", "stop", "pause"])
         >>> phon.get_phon_path(PATH+"/audios/", PATH+"/phonclasses2/")
         """
@@ -360,6 +362,7 @@ class Phonet:
         :param audio_file: file audio (.wav) sampled at 16 kHz
         :returns: plot of the posteriorgram
 
+        >>> from phonet.phonet import Phonet
         >>> phon=Phonet(["vocalic", "strident", "nasal", "back", "stop", "pause"])
         >>> phon.get_posteriorgram(file_audio)
         """
@@ -424,6 +427,7 @@ class Phonet:
         :plot_flag: True or False. Plot distributions of the feature space
         :returns: Pandas dataFrame with the PLLR features
 
+        >>> from phonet.phonet import Phonet
         >>> phon=Phonet(["all"])
         >>> file_audio=PATH+"/audios/sentence.wav"
         >>> phon.get_PLLR(file_audio)
