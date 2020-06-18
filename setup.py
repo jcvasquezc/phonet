@@ -1,5 +1,4 @@
 from setuptools import setup
-from setuptools import find_packages
 
 install_requires = [
     'tensorflow',
@@ -19,15 +18,15 @@ install_requires = [
 
 setup(
     name='phonet',
-    version='0.3.1',
+    version='0.3.2',
     description='Compute phonological posteriors from speech signals using a deep learning scheme',
     author='J. C. Vasquez-Correa',
     author_email='juan.vasquez@fau.de',
     url='https://github.com/jcvasquezc/phonet',
-    download_url='https://github.com/jcvasquezc/phonet/archive/0.3.tar.gz',
+    download_url='https://github.com/jcvasquezc/phonet/archive/0.3.2.tar.gz',
     license='MIT',
     install_requires=install_requires,
-    packages=find_packages(),
+    packages=['phonet'],
     keywords = ['phonological', 'speech', 'speech features', 'articulatory features', 'phoneme recognition'],
     dependency_links=['git+git://github.com/jameslyons/python_speech_features'],
     classifiers=[
