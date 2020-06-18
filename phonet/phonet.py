@@ -26,7 +26,11 @@ from keras import optimizers
 import gc
 from keras import backend as K
 from matplotlib import cm
-from Phonological import Phonological
+try:
+    from phonet.Phonological import Phonological
+except:
+    from Phonological import Phonological
+
 from tqdm import tqdm
 
 class Phonet:
