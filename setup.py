@@ -9,12 +9,12 @@ install_requires = [
     'six',
     'matplotlib',
     'python_speech_features',
-    'tqdm'
-    'scikit_learn'
-    'setuptools'
-    'numpy'
-    'scipy'
-    'matplotlib'
+    'tqdm',
+    'scikit_learn',
+    'setuptools',
+    'numpy',
+    'scipy',
+    'matplotlib',
 ]
 
 setup(
