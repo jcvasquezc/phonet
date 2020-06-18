@@ -68,13 +68,10 @@ class Phonological:
 def main():
     phon=Phonological()
     keys=phon.get_list_phonological_keys()
-    print(keys)
+
     d1=phon.get_d1()
-    print(d1)
     d2=phon.get_d2()
-    print(d2)
     ph=phon.get_list_phonemes()
-    print(ph)
 
 if __name__=="__main__":
     main()

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Compute posteriors probabilities of phonological classes from audio files for several groups of phonemes according to the mode and manner of articulation.
+
 @author: J. C. Vasquez-Correa
         Pattern recognition Lab, University of Erlangen-Nuremberg
         Faculty of Engineering, University of Antioquia,
@@ -195,7 +196,6 @@ class Phonet:
 
             return phonemes
         except:
-            print("number:*"+ seq+"*is not in the list")
             return np.nan
 
 
@@ -303,23 +303,7 @@ class Phonet:
                         difft=t2[nu]-ini
                         plt.text(x=ini+difft/2, y=1, s=phonemes_list[nu-1], color="k", fontsize=10)
                         ini=t2[nu]
-                """
-                start=t2[0]
-                fin=t2[0]
-                thr=0.5
-                for nu in range(1,len(df[problem])):
-                    if (df[problem][nu]>thr and df[problem][nu-1]<=thr):
-                        start=t2[nu]
 
-                    elif (df[problem][nu]<=thr and df[problem][nu-1]>thr) or (nu==len(df[problem])-1 and df[problem][nu-1]>thr):
-                        fin=t2[nu]
-
-                        plt.plot([fin, fin], [-1, 1], colors[l], alpha=0.5)
-                        plt.plot([start, start], [-1, 1], colors[l], alpha=0.5)
-                        difft=fin-start
-                        currentAxis = plt.gca()
-                        currentAxis.add_patch(Rectangle((start,-1),width=difft,height=2,color=colors[l],alpha=0.3))
-                """
                 plt.xlabel("Time (s)")
                 plt.ylabel("Phonological posteriors")
                 plt.legend(loc=8, ncol=2)
