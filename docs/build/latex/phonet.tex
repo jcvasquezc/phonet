@@ -166,12 +166,12 @@ pause
 
 
 \chapter{Need Help?}
-\label{\detokenize{help:welcome-to-phonet-s-documentation}}\label{\detokenize{help::doc}}\label{\detokenize{help:need-help}}
+\label{\detokenize{help::doc}}\label{\detokenize{help:welcome-to-phonet-s-documentation}}\label{\detokenize{help:need-help}}
 If you have trouble with Phonet, please write to Camilo Vasquez at: \sphinxhref{mailto:juan.vasquez@fau.de}{juan.vasquez@fau.de}
 
 
 \chapter{References}
-\label{\detokenize{reference::doc}}\label{\detokenize{reference:references}}
+\label{\detokenize{reference:references}}\label{\detokenize{reference::doc}}
 If you use Phonet for research purposes, please cite the following paper:
 
 Vásquez-Correa, J. C., Klumpp, P., Orozco-Arroyave, J. R., \& Nöth, E. (2019). Phonet: a Tool Based on Gated Recurrent Neural Networks to Extract Phonological Posteriors from Speech. Proc. Interspeech 2019, 549-553.
@@ -212,13 +212,13 @@ From the source file:
 \chapter{Methods}
 \label{\detokenize{index:methods}}\label{\detokenize{index:module-phonet}}\index{phonet (module)}
 Compute posteriors probabilities of phonological classes from audio files for several groups of phonemes according to the mode and manner of articulation.
-@author: J. C. Vasquez-Correa
-\begin{quote}
-
+\begin{description}
+\item[{@author: J. C. Vasquez-Correa}] \leavevmode
 Pattern recognition Lab, University of Erlangen-Nuremberg
 Faculty of Engineering, University of Antioquia,
 \sphinxhref{mailto:juan.vasquez@fau.de}{juan.vasquez@fau.de}
-\end{quote}
+
+\end{description}
 \index{Phonet (class in phonet)}
 
 \begin{fulllineitems}
@@ -263,6 +263,7 @@ Pandas dataFrame with the PLLR features
 \end{description}\end{quote}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from} \PYG{n+nn}{phonet}\PYG{n+nn}{.}\PYG{n+nn}{phonet} \PYG{k+kn}{import} \PYG{n}{Phonet}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{phon}\PYG{o}{=}\PYG{n}{Phonet}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{all}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{file\PYGZus{}audio}\PYG{o}{=}\PYG{n}{PATH}\PYG{o}{+}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/audios/sentence.wav}\PYG{l+s+s2}{\PYGZdq{}}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{phon}\PYG{o}{.}\PYG{n}{get\PYGZus{}PLLR}\PYG{p}{(}\PYG{n}{file\PYGZus{}audio}\PYG{p}{)}
@@ -323,6 +324,7 @@ A directory with csv files created with the posterior probabilities for the phon
 \end{description}\end{quote}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from} \PYG{n+nn}{phonet}\PYG{n+nn}{.}\PYG{n+nn}{phonet} \PYG{k+kn}{import} \PYG{n}{Phonet}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{phon}\PYG{o}{=}\PYG{n}{Phonet}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{vocalic}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{strident}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{nasal}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{back}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{stop}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pause}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{phon}\PYG{o}{.}\PYG{n}{get\PYGZus{}phon\PYGZus{}path}\PYG{p}{(}\PYG{n}{PATH}\PYG{o}{+}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/audios/}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{PATH}\PYG{o}{+}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/phonclasses2/}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \end{sphinxVerbatim}
@@ -353,6 +355,7 @@ A pandas dataFrame with the posterior probabilities for the phonological classes
 \end{description}\end{quote}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from} \PYG{n+nn}{phonet}\PYG{n+nn}{.}\PYG{n+nn}{phonet} \PYG{k+kn}{import} \PYG{n}{Phonet}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{phon}\PYG{o}{=}\PYG{n}{Phonet}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{stop}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{} get the \PYGZdq{}stop\PYGZdq{} phonological posterior from a single file}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{file\PYGZus{}audio}\PYG{o}{=}\PYG{n}{PATH}\PYG{o}{+}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/audios/pataka.wav}\PYG{l+s+s2}{\PYGZdq{}}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{file\PYGZus{}feat}\PYG{o}{=}\PYG{n}{PATH}\PYG{o}{+}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/phonclasses/pataka}\PYG{l+s+s2}{\PYGZdq{}}
@@ -390,6 +393,7 @@ plot of the posteriorgram
 \end{description}\end{quote}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from} \PYG{n+nn}{phonet}\PYG{n+nn}{.}\PYG{n+nn}{phonet} \PYG{k+kn}{import} \PYG{n}{Phonet}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{phon}\PYG{o}{=}\PYG{n}{Phonet}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{vocalic}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{strident}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{nasal}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{back}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{stop}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pause}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{phon}\PYG{o}{.}\PYG{n}{get\PYGZus{}posteriorgram}\PYG{p}{(}\PYG{n}{file\PYGZus{}audio}\PYG{p}{)}
 \end{sphinxVerbatim}

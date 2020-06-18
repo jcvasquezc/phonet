@@ -1,10 +1,10 @@
 \indexentry{phonet (module)|hyperpage}{9}
 \indexentry{Phonet (class in phonet)|hyperpage}{9}
 \indexentry{get\_PLLR() (phonet.Phonet method)|hyperpage}{9}
-\indexentry{get\_feat() (phonet.Phonet method)|hyperpage}{9}
+\indexentry{get\_feat() (phonet.Phonet method)|hyperpage}{10}
 \indexentry{get\_phon\_path() (phonet.Phonet method)|hyperpage}{10}
 \indexentry{get\_phon\_wav() (phonet.Phonet method)|hyperpage}{10}
-\indexentry{get\_posteriorgram() (phonet.Phonet method)|hyperpage}{10}
+\indexentry{get\_posteriorgram() (phonet.Phonet method)|hyperpage}{11}
 \indexentry{mask\_correction() (phonet.Phonet method)|hyperpage}{11}
 \indexentry{model() (phonet.Phonet method)|hyperpage}{11}
 \indexentry{modelp() (phonet.Phonet method)|hyperpage}{11}
