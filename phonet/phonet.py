@@ -143,8 +143,8 @@ class Phonet:
         input_data=Input(shape=(input_size))
         x=input_data
         x=BatchNormalization()(x)
-        x=Bidirectional(GRU(self.GRU_size, recurrent_dropout=self.recurrent_droput_prob, return_sequences=True))(x)
-        x=Bidirectional(GRU(self.GRU_size, recurrent_dropout=self.recurrent_droput_prob, return_sequences=True))(x)
+        x=Bidirectional(GRU(self.GRU_size, recurrent_dropout=self.recurrent_droput_prob, return_sequences=True, reset_after=False))(x)
+        x=Bidirectional(GRU(self.GRU_size, recurrent_dropout=self.recurrent_droput_prob, return_sequences=True, reset_after=False))(x)
         x=Dropout(0.2)(x)
         x = TimeDistributed(Dense(self.hidden_size, activation='relu'))(x)
         x=Dropout(0.2)(x)
