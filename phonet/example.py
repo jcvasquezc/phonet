@@ -14,26 +14,29 @@ if __name__=="__main__":
 
     PATH=os.path.dirname(os.path.abspath(__file__))
     
+    path_results=os.path.join(PATH, "examples")
 
+    if not os.path.exists(path_results):
+        os.makedirs(path_results)
     ## get the "stop" phonological posterior from a single file
     file_audio=PATH+"/audios/pataka.wav"
-    file_feat=PATH+"/phonclasses/pataka"
+    file_feat=path_results+"/pataka"
     phon=Phonet(["stop"])
     phon.get_phon_wav(file_audio, file_feat, True)
 
     # get the "nasal" phonological posterior from a single file
     file_audio=PATH+"/audios/sentence.wav"
-    file_feat=PATH+"/phonclasses/sentence_nasal"
+    file_feat=path_results+"/sentence_nasal"
     phon=Phonet(["nasal"])
     phon.get_phon_wav(file_audio, file_feat, True)
 
     # get the "strident" phonological posterior from a single file
-    file_feat=PATH+"/phonclasses/sentence_strident"
+    file_feat=path_results+"/sentence_strident"
     phon=Phonet(["strident"])
     phon.get_phon_wav(file_audio, file_feat, True)
 
     # get "strident, nasal, and back" phonological posteriors from a single file
-    file_feat=PATH+"/phonclasses/sentence_all"
+    file_feat=path_results+"/sentence_all"
     phon=Phonet(["strident", "nasal", "back"])
     phon.get_phon_wav(file_audio, file_feat, True)
 
@@ -46,7 +49,7 @@ if __name__=="__main__":
     # get phonological posteriors from de audio files included in a directory
     directory=PATH+"/phonclasses/"
     phon=Phonet(["vocalic", "strident", "nasal", "back", "stop", "pause"])
-    phon.get_phon_path(PATH+"/audios/", PATH+"/phonclasses2/")
+    phon.get_phon_path(PATH+"/audios/", path_results)
 
     ## get the PLLR features from an audio file
     phon=Phonet(["all"])

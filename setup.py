@@ -5,7 +5,6 @@ except ImportError:
 
 install_requires = [
     'tensorflow',
-    'Keras',
     'pandas',
     'pysptk',
     'six',
@@ -21,12 +20,12 @@ install_requires = [
 
 setup(
     name='phonet',
-    version='0.3.5',
+    version='0.3.7',
     description='Compute phonological posteriors from speech signals using a deep learning scheme',
     author='J. C. Vasquez-Correa',
     author_email='juan.vasquez@fau.de',
     url='https://github.com/jcvasquezc/phonet',
-    download_url='https://github.com/jcvasquezc/phonet/archive/0.3.5.tar.gz',
+    download_url='https://github.com/jcvasquezc/phonet/archive/0.3.7.tar.gz',
     license='MIT',
     install_requires=install_requires,
     packages=['phonet'],

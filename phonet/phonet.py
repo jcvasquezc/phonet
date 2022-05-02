@@ -15,16 +15,10 @@ from scipy.io.wavfile import read
 import pandas as pd
 import matplotlib.pyplot as plt
 plt.rcParams["font.family"] = "Times New Roman"
-from matplotlib.patches import Rectangle, Ellipse
-from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
-from scipy.signal import resample_poly
 
-from keras.layers import Input, BatchNormalization, Bidirectional, GRU, Permute, Dropout, Dense, TimeDistributed
-from keras.utils import np_utils
-from keras.models import Model
-from keras import optimizers
+from scipy.signal import resample_poly
+from tensorflow import keras
 import gc
-from keras import backend as K
 from matplotlib import cm
 try:
     from phonet.Phonological import Phonological
@@ -61,7 +55,7 @@ class Phonet:
         self.nfilt=33
         self.len_seq=40
         self.names=self.Phon.get_list_phonological_keys()
-        self.num_labels=num_labels=[2 for j in range(len(self.names))]
+        self.num_labels=[2 for j in range(len(self.names))]
         self.nfeat=34
         self.thrplot=0.7
         self.nphonemes=len(self.phonemes)
@@ -74,7 +68,6 @@ class Phonet:
         self.MU, self.STD=self.load_scaler()
         
     def load_model(self):
-        Models=[]
         input_size=(self.len_seq, self.nfeat)
         model_file=self.path+"/models/model.h5"
         Model=self.model(input_size)
@@ -120,15 +113,15 @@ class Phonet:
         :param input_size: size of input for the BGRU layers (number of features x sequence length).
         :returns: A Keras model of a 2-layer BGRU neural network.
         """
-        input_data=Input(shape=(input_size))
+        input_data=keras.layers.Input(shape=(input_size))
         x=input_data
-        x=BatchNormalization()(x)
-        x=Bidirectional(GRU(self.GRU_size, recurrent_dropout=self.recurrent_droput_prob, return_sequences=True, reset_after=False))(x)
-        x=Bidirectional(GRU(self.GRU_size, recurrent_dropout=self.recurrent_droput_prob, return_sequences=True, reset_after=False))(x)
-        x = TimeDistributed(Dense(self.hidden_size, activation='relu'))(x)
-        x = TimeDistributed(Dense(self.nphonemes, activation='softmax'))(x)
-        modelGRU=Model(inputs=input_data, outputs=x)
-        opt=optimizers.Adam(lr=self.lr)
+        x=keras.layers.BatchNormalization()(x)
+        x=keras.layers.Bidirectional(keras.layers.GRU(self.GRU_size, recurrent_dropout=self.recurrent_droput_prob, return_sequences=True, reset_after=False))(x)
+        x=keras.layers.Bidirectional(keras.layers.GRU(self.GRU_size, recurrent_dropout=self.recurrent_droput_prob, return_sequences=True, reset_after=False))(x)
+        x = keras.layers.TimeDistributed(keras.layers.Dense(self.hidden_size, activation='relu'))(x)
+        x = keras.layers.TimeDistributed(keras.layers.Dense(self.nphonemes, activation='softmax'))(x)
+        modelGRU=keras.Model(inputs=input_data, outputs=x)
+        opt=keras.optimizers.Adam(learning_rate=self.lr)
         modelGRU.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['categorical_accuracy'])
         return modelGRU
 
@@ -140,23 +133,23 @@ class Phonet:
         :param input_size: size of input for the BGRU layers (number of features x sequence length).
         :returns: A Keras model of a 2-layer BGRU neural network.
         """
-        input_data=Input(shape=(input_size))
+        input_data=keras.layers.Input(shape=(input_size))
         x=input_data
-        x=BatchNormalization()(x)
-        x=Bidirectional(GRU(self.GRU_size, recurrent_dropout=self.recurrent_droput_prob, return_sequences=True, reset_after=False))(x)
-        x=Bidirectional(GRU(self.GRU_size, recurrent_dropout=self.recurrent_droput_prob, return_sequences=True, reset_after=False))(x)
-        x=Dropout(0.2)(x)
-        x = TimeDistributed(Dense(self.hidden_size, activation='relu'))(x)
-        x=Dropout(0.2)(x)
+        x=keras.layers.BatchNormalization()(x)
+        x=keras.layers.Bidirectional(keras.layers.GRU(self.GRU_size, recurrent_dropout=self.recurrent_droput_prob, return_sequences=True, reset_after=False))(x)
+        x=keras.layers.Bidirectional(keras.layers.GRU(self.GRU_size, recurrent_dropout=self.recurrent_droput_prob, return_sequences=True, reset_after=False))(x)
+        x=keras.layers.Dropout(0.2)(x)
+        x = keras.layers.TimeDistributed(keras.layers.Dense(self.hidden_size, activation='relu'))(x)
+        x=keras.layers.Dropout(0.2)(x)
             # multi-task
         xout=[]
         out=[]
         for j in range(len(self.names)):
-            xout.append(TimeDistributed(Dense(self.hidden_size, activation='relu'))(x))
-            out.append(TimeDistributed(Dense(2, activation='softmax'), name=self.names[j])(xout[-1]))
+            xout.append(keras.layers.TimeDistributed(keras.layers.Dense(self.hidden_size, activation='relu'))(x))
+            out.append(keras.layers.TimeDistributed(keras.layers.Dense(2, activation='softmax'), name=self.names[j])(xout[-1]))
 
-        modelGRU=Model(inputs=input_data, outputs=out)
-        opt=optimizers.Adam(lr=self.lr)
+        modelGRU=keras.Model(inputs=input_data, outputs=out)
+        opt=keras.optimizers.Adam(learning_rate=self.lr)
         alphas=list(np.ones(len(self.names))/len(self.names))
         modelGRU.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['categorical_accuracy'], sample_weight_mode="temporal", loss_weights=alphas)
         return modelGRU
@@ -234,7 +227,6 @@ class Phonet:
 
         fs, signal=read(audio_file)
         if fs!=16000:
-            #raise ValueError(str(fs)+" is not a valid sampling frequency")
             signal=resample_poly(signal, 16000, fs)
             fs=16000
         feat=self.get_feat(signal,fs)
@@ -282,47 +274,45 @@ class Phonet:
             dfa[problem]=self.mask_correction(post)
         
         if plot_flag:
-            n_plots=int(np.ceil(len(self.keys_val)/4))
-            figsize=(6,int(n_plots*3))
-            colors = cm.get_cmap('Accent', 5)
-            col_order=[0,1,2,3]*n_plots
-            plt.figure(figsize=figsize)
+            self.plot_phonological(feat_file, fs, signal, dfa, phonemes_list, t2)
+
+        dfa=pd.DataFrame(dfa)
+        if len(feat_file)>0:
+            dfa.to_csv(feat_file, index=False)
+        gc.collect()
+        return dfa
+
+    def plot_phonological(self, feat_file, fs, signal, dfa, phonemes_list, t2):
+        n_plots=int(np.ceil(len(self.keys_val)/4))
+        figsize=(6,int(n_plots*3))
+        colors = cm.get_cmap('Accent', 5)
+        col_order=[0,1,2,3]*n_plots
+        plt.figure(figsize=figsize)
         for l, problem in enumerate(self.keys_val):
 
-            df[problem]=dfa[problem]
+            if (l==0) or (l==4) or (l==8) or (l==12) or (l==16):
+                subp=int(l/4+1)
+                plt.subplot(n_plots,1, subp)
+                t=np.arange(len(signal))/fs
+                signal=signal-np.mean(signal)
+                plt.plot(t,signal/np.max(np.abs(signal)), color=colors.colors[4], alpha=0.5)
+                plt.grid()
 
-            if plot_flag:
-                
-                if (l==0) or (l==4) or (l==8) or (l==12) or (l==16):
-                    subp=int(l/4+1)
-                    plt.subplot(n_plots,1, subp)
-                    t=np.arange(len(signal))/fs
-                    signal=signal-np.mean(signal)
-                    plt.plot(t,signal/np.max(np.abs(signal)), color=colors.colors[4], alpha=0.5)
-                    plt.grid()
+            plt.plot(t2,dfa[problem],  color=colors.colors[col_order[l]], label=problem, linewidth=2)
+            ini=t2[0]
+            for nu in range(1,len(phonemes_list)):
+                if phonemes_list[nu]!=phonemes_list[nu-1] or nu==len(phonemes_list)-1:
+                    difft=t2[nu]-ini
+                    plt.text(x=ini+difft/2, y=1, s=phonemes_list[nu-1], color="k", fontsize=10)
+                    ini=t2[nu]
 
-                plt.plot(t2,df[problem],  color=colors.colors[col_order[l]], label=problem, linewidth=2)
-                ini=t2[0]
-                for nu in range(1,len(phonemes_list)):
-                    if phonemes_list[nu]!=phonemes_list[nu-1] or nu==len(phonemes_list)-1:
-                        difft=t2[nu]-ini
-                        plt.text(x=ini+difft/2, y=1, s=phonemes_list[nu-1], color="k", fontsize=10)
-                        ini=t2[nu]
+            plt.xlabel("Time (s)")
+            plt.ylabel("Phonological posteriors")
+            plt.legend(loc=8, ncol=2)
 
-                plt.xlabel("Time (s)")
-                plt.ylabel("Phonological posteriors")
-                plt.legend(loc=8, ncol=2)
-
-        if plot_flag:
-            plt.tight_layout()
-            plt.savefig(feat_file+"post.png")
-            plt.show()
-
-        df2=pd.DataFrame(df)
-        if len(feat_file)>0:
-            df2.to_csv(feat_file)
-        gc.collect()
-        return df2
+        plt.tight_layout()
+        plt.savefig(feat_file+"post.png")
+        plt.show()
 
 
 
@@ -460,63 +450,11 @@ class Phonet:
             P=I-Ones.T*Ones
             PLLRp=np.matmul(PLLR,P)
 
-            if plot_flag:
-                figsize=(10,3)
-                
-                fig=plt.figure(figsize=figsize)
-                
-                ax = fig.add_subplot(131, projection='3d')
-                indexes=np.random.randint(0,PLLR.shape[1], 3)
-                ax.scatter(post[:,indexes[0]],post[:,indexes[1]], post[:,indexes[2]], c='b', alpha=0.2, s=20)
-                ax.set_xlabel(self.keys_val[indexes[0]])
-                ax.set_ylabel(self.keys_val[indexes[1]])
-                ax.set_zlabel(self.keys_val[indexes[2]])
-                plt.title("Posteriors")
-                ax = fig.add_subplot(132, projection='3d')
-                ax.scatter(PLLR[:,indexes[0]],PLLR[:,indexes[1]],PLLR[:,indexes[2]], c='b', alpha=0.2, s=20)
-                ax.set_xlabel(self.keys_val[indexes[0]])
-                ax.set_ylabel(self.keys_val[indexes[1]])
-                ax.set_zlabel(self.keys_val[indexes[2]])
-                plt.title("PLLR")
-                ax = fig.add_subplot(133, projection='3d')
-                ax.scatter(PLLRp[:,indexes[0]],PLLRp[:,indexes[1]],PLLRp[:,indexes[2]], c='b', alpha=0.2, s=20)
-                ax.set_xlabel(self.keys_val[indexes[0]])
-                ax.set_ylabel(self.keys_val[indexes[1]])
-                ax.set_zlabel(self.keys_val[indexes[2]])
-                plt.title("Projected PLLR")
-                plt.tight_layout()
-        
         for l, problem in enumerate(self.keys_val):
             if projected:
                 dfPLLR[problem]=PLLRp[:,l]
             else:
                 dfPLLR[problem]=PLLR[:,l]
-
-        if plot_flag:
-            ncols=2
-            nrows=int(np.ceil(len(self.keys_val)/4))
-            figsize=(6,int(nrows*4))
-            colors = cm.get_cmap('Accent', 4)
-            colorsn=[0,1,2,3]*len(self.keys_val)
-            plt.figure(figsize=figsize)
-            for l, problem in enumerate(self.keys_val):
-
-                if (l==0) or (l==4) or (l==8) or (l==12) or (l==16):
-                    subp1=int(2*l/4+1)
-                    subp2=int(2*l/4+2)
-                plt.subplot(nrows,ncols, subp1)
-                plt.hist(df[problem], color=colors.colors[colorsn[l]], label=problem, alpha=0.5)
-                if l==len(self.keys_val)-1:
-                    plt.xlabel("Phonological posteriors")
-                plt.subplot(nrows,ncols, subp2)
-                plt.hist(dfPLLR[problem], color=colors.colors[colorsn[l]], label=problem, alpha=0.5)
-                if l==len(self.keys_val)-1:
-                    plt.xlabel("PLLR")
-                plt.legend()
-                plt.tight_layout()
-                plt.grid()
-            plt.show()
-
         dfPLLR=pd.DataFrame(dfPLLR)
         if len(feat_file)>0:
             dfPLLR.to_csv(feat_file)
