@@ -3,7 +3,7 @@ scipy==1.1.0
 Keras==2.2.4
 matplotlib==3.0.2
 six==1.11.0
-numpy==1.15.4
+numpy==1.21.0
 GPyOpt==1.2.5
 pysptk==0.1.17
 python_speech_features==0.6
